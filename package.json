@@ -1,0 +1,11 @@
+{
+  "name": "api-companion-monorepo",
+  "private": true,
+  "version": "0.4.0",
+  "scripts": {
+    "dev": "pnpm --filter api-companion-desktop tauri dev",
+    "build:app": "pnpm --filter api-companion-desktop tauri build",
+    "typecheck": "pnpm --filter api-companion-desktop exec tsc --noEmit"
+  },
+  "packageManager": "pnpm@9.15.4"
+}

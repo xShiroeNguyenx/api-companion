@@ -1,0 +1,16 @@
+[package]
+name = "ai-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "AI layer BYOK: provider abstraction (Claude/OpenAI/Gemini/Ollama), secret scrubber, prompts."
+
+[dependencies]
+ipc-types = { path = "../ipc-types" }
+http-engine = { path = "../http-engine" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["rt", "macros"] }

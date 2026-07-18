@@ -1,0 +1,16 @@
+[package]
+name = "apitest"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "CLI smoke-test cho http-engine (dev tool nội bộ, không ship)."
+
+[[bin]]
+name = "apitest"
+path = "src/main.rs"
+
+[dependencies]
+ipc-types = { path = "../ipc-types" }
+http-engine = { path = "../http-engine" }
+tokio = { workspace = true, features = ["rt-multi-thread", "macros"] }
+serde_json = { workspace = true }

@@ -1,0 +1,76 @@
+name: Release
+
+# Đẩy tag dạng v* (vd v0.4.0) → build installer mọi OS + tạo GitHub Release (draft, pre-release).
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build & Release (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            args: ""
+            rust-targets: ""
+          - os: macos-latest
+            args: "--target universal-apple-darwin"
+            rust-targets: "aarch64-apple-darwin,x86_64-apple-darwin"
+          - os: ubuntu-latest
+            args: ""
+            rust-targets: ""
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Linux deps (Tauri)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust-targets }}
+
+      - name: Cache Rust
+        uses: Swatinem/rust-cache@v2
+
+      - name: Install frontend deps
+        run: pnpm install --frozen-lockfile
+
+      # tauri-action tự chạy beforeBuildCommand (pnpm build) → build FE + Rust + đóng gói installer,
+      # rồi tạo/ cập nhật GitHub Release theo tag và upload artifact.
+      - name: Build & release (tauri-action)
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectPath: apps/desktop
+          tagName: ${{ github.ref_name }}
+          releaseName: "API Companion ${{ github.ref_name }}"
+          releaseBody: |
+            Xem [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) để biết chi tiết.
+
+            ⚠️ Bản alpha **chưa ký số** — Windows SmartScreen sẽ cảnh báo: bấm *More info → Run anyway*.
+          releaseDraft: true
+          prerelease: true
+          args: ${{ matrix.args }}

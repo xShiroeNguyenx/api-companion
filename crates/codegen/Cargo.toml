@@ -1,0 +1,11 @@
+[package]
+name = "codegen"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Sinh code request (fetch/axios/python/go/php/rust...) từ RequestSpec — logic thuần, dễ golden-test."
+
+[dependencies]
+ipc-types = { path = "../ipc-types" }
+curl-tools = { path = "../curl-tools" }
+base64 = { workspace = true }

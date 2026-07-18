@@ -1,0 +1,16 @@
+[package]
+name = "workspace"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Định dạng file collections/environments (TOML git-friendly), scan tree, resolve biến, inherit."
+
+[dependencies]
+ipc-types = { path = "../ipc-types" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+toml = "0.8"
+
+[dev-dependencies]
+tempfile = "3"

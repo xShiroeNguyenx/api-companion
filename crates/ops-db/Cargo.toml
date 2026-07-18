@@ -1,0 +1,15 @@
+[package]
+name = "ops-db"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Ops: query Database (Postgres/MySQL/SQLite) — enforce read-only (chỉ SELECT)."
+
+[dependencies]
+ipc-types = { path = "../ipc-types" }
+sqlparser = "0.52"
+tokio = { workspace = true, features = ["time"] }
+sqlx = { version = "0.8", default-features = false, features = ["runtime-tokio", "tls-rustls", "any", "postgres", "mysql", "sqlite"] }
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["rt", "macros"] }

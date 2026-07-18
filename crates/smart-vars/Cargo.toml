@@ -1,0 +1,16 @@
+[package]
+name = "smart-vars"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Smart variables: {{uuid.v7}}, {{today+7}}, {{faker.*}}, {{jwt(x).claim}}, {{otp}}, {{randomInt}}."
+
+[dependencies]
+ipc-types = { path = "../ipc-types" }
+serde_json = { workspace = true }
+base64 = { workspace = true }
+uuid = { version = "1", features = ["v4", "v7"] }
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+fake = "2.9"
+rand = "0.8"
+totp-rs = "5.6"

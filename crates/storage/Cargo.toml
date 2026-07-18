@@ -1,0 +1,13 @@
+[package]
+name = "storage"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Lưu trữ runtime bằng SQLite (rusqlite bundled): history, và về sau timeline/cache."
+
+[dependencies]
+ipc-types = { path = "../ipc-types" }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+rusqlite = { version = "0.32", features = ["bundled"] }
+uuid = { version = "1", features = ["v4"] }

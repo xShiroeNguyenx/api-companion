@@ -1,0 +1,10 @@
+[package]
+name = "postman-import"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Parse Postman Collection v2.1 → cây collection của API Companion."
+
+[dependencies]
+ipc-types = { path = "../ipc-types" }
+serde_json = { workspace = true }

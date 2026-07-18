@@ -1,0 +1,10 @@
+[package]
+name = "ops-ssh"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Ops: chạy lệnh qua SSH (tail/grep log). Dùng ssh binary hệ thống (key/agent/known_hosts)."
+
+[dependencies]
+ipc-types = { path = "../ipc-types" }
+tokio = { workspace = true, features = ["process", "time", "io-util"] }

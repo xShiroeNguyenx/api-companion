@@ -1,0 +1,45 @@
+[package]
+name = "api-companion"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "API Companion desktop app (Tauri v2 shell)."
+default-run = "api-companion"
+
+[lib]
+name = "api_companion_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[[bin]]
+name = "api-companion"
+path = "src/main.rs"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+ipc-types = { path = "../../../crates/ipc-types" }
+http-engine = { path = "../../../crates/http-engine" }
+storage = { path = "../../../crates/storage" }
+curl-tools = { path = "../../../crates/curl-tools" }
+workspace = { path = "../../../crates/workspace" }
+postman-import = { path = "../../../crates/postman-import" }
+secrets = { path = "../../../crates/secrets" }
+ai-core = { path = "../../../crates/ai-core" }
+smart-vars = { path = "../../../crates/smart-vars" }
+assertions = { path = "../../../crates/assertions" }
+diagnose = { path = "../../../crates/diagnose" }
+ops-db = { path = "../../../crates/ops-db" }
+ops-ssh = { path = "../../../crates/ops-ssh" }
+bundle = { path = "../../../crates/bundle" }
+codegen = { path = "../../../crates/codegen" }
+tauri = { version = "2", features = [] }
+tauri-plugin-opener = "2"
+tauri-plugin-dialog = "2"
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+tokio-util = { workspace = true }
+
+[dev-dependencies]
+tempfile = "3"

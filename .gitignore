@@ -1,0 +1,27 @@
+# Rust
+/target
+**/target
+Cargo.lock.bak
+
+# Node / frontend
+node_modules
+dist
+dist-ssr
+.vite
+*.local
+
+# Tauri
+apps/desktop/src-tauri/target
+apps/desktop/src-tauri/gen
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea
+.vscode/*
+!.vscode/extensions.json
+
+# App runtime data / secrets (KHÔNG commit)
+*.env
+.env.*
+/workspace-data

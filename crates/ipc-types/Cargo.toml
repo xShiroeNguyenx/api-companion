@@ -1,0 +1,20 @@
+[package]
+name = "ipc-types"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Hợp đồng dữ liệu trung tâm (DTOs) dùng chung giữa mọi crate Rust và frontend."
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+
+[features]
+# Bật khi wiring Tauri để sinh TypeScript bindings qua tauri-specta.
+specta = ["dep:specta"]
+
+[dependencies.specta]
+version = "2.0.0-rc.20"
+features = ["derive"]
+optional = true

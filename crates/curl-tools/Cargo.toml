@@ -1,0 +1,9 @@
+[package]
+name = "curl-tools"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Parse lệnh curl ↔ RequestSpec (import/export). Logic thuần, testable."
+
+[dependencies]
+ipc-types = { path = "../ipc-types" }
