@@ -8,6 +8,19 @@ project tuân [Semantic Versioning](https://semver.org/lang/vi/) với quy ướ
 
 _(chưa có)_
 
+## [0.4.1] — 2026-07-19
+
+### Added
+- **Nhân bản request** (Duplicate) từ menu ngữ cảnh trên cây collection — tạo nhanh bản sao `"<tên> copy"` cùng thư mục và mở ngay vào tab.
+- **Menu kebab `⋯`** trên mỗi node: request → Mở / Nhân bản / Run / Export / Xoá; collection & folder → Thêm request / Thêm folder / Run tất cả / Export / Xoá.
+
+### Changed
+- **Nút Xoá chuyển vào trong menu kebab** (đặt cuối, tách bằng vạch ngăn, hover đỏ) thay cho nút `×` ngay cạnh tên → giảm bấm nhầm.
+- **Icon app mới**: rounded-square gradient chàm→tím + dấu ngoặc `{ }` và spark ✦ (API + AI), đọc rõ cả ở 32px.
+
+### Fixed
+- **Layout thanh công cụ**: nút `cURL` và `</>` (Generate code) bị cắt/tràn chữ do ô icon rộng cố định 34px → chuyển sang co giãn theo nội dung (`min-width` + padding).
+
 ## [0.4.0] — 2026-07-18 — **Public Alpha đầu tiên** 🎉
 
 Bản phát hành công khai đầu tiên: HTTP client AI-first (M0–M3) + Ops Workspace SSH/DB (P2-M1) + hệ workspace đa vùng. **Toàn bộ build sạch, 81 test Rust pass.** Windows-first (macOS/Linux best-effort).
@@ -73,5 +86,6 @@ Bản phát hành công khai đầu tiên: HTTP client AI-first (M0–M3) + Ops 
 - macOS/Linux: build best-effort, chưa test kỹ.
 - Chưa có: GraphQL/WebSocket/gRPC (M4/M6), diff engine (M5), git panel, drag-drop node, rename giữ tên folder gốc. Xem [ICEBOX.md](./ICEBOX.md).
 
-[Unreleased]: https://github.com/OWNER/api-companion/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/OWNER/api-companion/compare/v0.4.1...HEAD
+[0.4.1]: https://github.com/OWNER/api-companion/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/OWNER/api-companion/releases/tag/v0.4.0

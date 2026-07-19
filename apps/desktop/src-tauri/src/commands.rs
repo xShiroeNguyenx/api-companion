@@ -432,6 +432,28 @@ pub fn create_folder(state: State<'_, AppState>, parent_id: String, name: String
     workspace::create_folder(&ws_root(&state), &parent_id, &name).map_err(|e| e.to_string())
 }
 
+/// Nhân bản một request: tạo file mới CÙNG thư mục, tên "<name> copy". Trả về id mới.
+#[tauri::command]
+pub fn duplicate_node(state: State<'_, AppState>, id: String) -> Result<String, String> {
+    let root = ws_root(&state);
+    let saved = workspace::load_request(&root, &id).map_err(|e| e.to_string())?;
+    // Thư mục cha = phần trước segment cuối của id (id là path forward-slash).
+    let parent = id.rsplit_once('/').map(|(p, _)| p.to_string()).unwrap_or_default();
+    let new_name = format!("{} copy", saved.name);
+    workspace::save_request(&root, &parent, &new_name, &saved.spec).map_err(|e| e.to_string())
+}
+
+/// Tạo một request rỗng trong collection/folder `parent_id`. Trả về id mới.
+#[tauri::command]
+pub fn add_request(
+    state: State<'_, AppState>,
+    parent_id: String,
+    name: String,
+) -> Result<String, String> {
+    let spec = RequestSpec::get("");
+    workspace::save_request(&ws_root(&state), &parent_id, &name, &spec).map_err(|e| e.to_string())
+}
+
 #[tauri::command]
 pub fn save_request(
     state: State<'_, AppState>,

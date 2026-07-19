@@ -6,7 +6,7 @@
 [![CI](https://github.com/OWNER/api-companion/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/api-companion/actions/workflows/ci.yml)
 [![Release](https://github.com/OWNER/api-companion/actions/workflows/release.yml/badge.svg)](https://github.com/OWNER/api-companion/actions/workflows/release.yml)
 
-**Phiên bản: `0.4.0` — Public Alpha** · Windows-first · MIT License · 81 test pass
+**Phiên bản: `0.4.1` — Public Alpha** · Windows-first · MIT License · 81 test pass
 
 Không chỉ "Send Request": API Companion xoay quanh **toàn bộ vòng đời làm việc với API** — hiểu API, sinh request bằng ngôn ngữ tự nhiên, chẩn đoán lỗi, kiểm chứng dữ liệu trong DB, đọc log qua SSH — trong **một** ứng dụng nhẹ (~10MB).
 
@@ -133,7 +133,7 @@ Rust core module hoá triệt để (mỗi crate một contract trait-first, tes
 | `crates/ops-ssh` — chạy lệnh qua ssh binary hệ thống | ✅ 1 test |
 | `crates/bundle` — format share native (export/import) | ✅ 2 test |
 | `crates/codegen` — sinh code request đa ngôn ngữ (fetch/python/go/php/rust…) | ✅ 6 test |
-| `apps/desktop/src-tauri` — Tauri shell + 52 commands | ✅ 3 test |
+| `apps/desktop/src-tauri` — Tauri shell + 54 commands | ✅ 3 test |
 | `apps/desktop` — React frontend | ✅ typecheck + bundle sạch |
 
 **Quy tắc vàng:** WebView không bao giờ tự gọi network — mọi request đi qua Rust core (tránh CORS, không lộ secret, metadata đầy đủ).

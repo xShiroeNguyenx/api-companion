@@ -9,7 +9,7 @@
 | **AI** | Multi-provider BYOK — Claude (mặc định) + OpenAI + Gemini + Ollama |
 | **Quy mô** | Solo dev + AI-assisted coding (Claude Code) |
 | **Ngày lập plan** | 2026-07-13 |
-| **Phiên bản hiện tại** | **`0.4.0` — Public Alpha** (cập nhật 2026-07-18) |
+| **Phiên bản hiện tại** | **`0.4.1` — Public Alpha** (cập nhật 2026-07-19) |
 
 ---
 
@@ -584,7 +584,7 @@ Cadence: mỗi milestone = một tagged release + patch release cho bug daily-dr
 ### Versioning
 
 - App: `0.<milestone>.<patch>` trong Phase 1 (M3 → 0.3.x); **1.0.0 = hết Phase 1**; Phase 2 = 1.x minors, Phase 3 = 2.x.
-  - **Hiện tại: `0.4.0`** — public alpha M3 cộng thêm P2-M1 (Ops) + workspace registry đã vượt M3 nên bump minor lên `.4`. Patch tiếp theo cho bug daily-driver là `0.4.x`; M4 sẽ là `0.5.0`.
+  - **Hiện tại: `0.4.1`** — public alpha M3 cộng thêm P2-M1 (Ops) + workspace registry đã vượt M3 nên bump minor lên `.4`; `0.4.1` là patch daily-driver (menu kebab + Nhân bản, fix layout, icon mới). M4 sẽ là `0.5.0`.
 - Plugin SDK: version độc lập, `0.x-experimental` cho tới P3-M5.
 - File formats: `schemaVersion` riêng ngay từ M1 + migration code — đổi format sau alpha mà không migrate được là mất user.
 

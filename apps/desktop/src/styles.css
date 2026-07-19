@@ -132,13 +132,19 @@ textarea:focus {
   cursor: default;
 }
 .icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
   border: 1px solid var(--border);
   border-radius: 6px;
   color: var(--text);
-  width: 34px;
+  min-width: 34px;
   height: 32px;
-  font-size: 15px;
+  padding: 0 9px;
+  font-size: 14px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* ============ Sidebar ============ */
@@ -746,7 +752,7 @@ textarea:focus {
 .tree-row:hover {
   background: var(--bg-3);
 }
-.tree-row:hover .tree-del {
+.tree-row:hover .tree-menu {
   opacity: 1;
 }
 .tree-caret {
@@ -767,15 +773,65 @@ textarea:focus {
   text-overflow: ellipsis;
   flex: 1;
 }
-.tree-del {
+.tree-menu {
   opacity: 0;
   background: none;
   border: none;
   color: var(--text-dim);
-  font-size: 14px;
+  font-size: 16px;
+  line-height: 1;
+  padding: 2px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  flex-shrink: 0;
 }
-.tree-del:hover {
+.tree-menu:hover {
+  color: var(--text);
+  background: var(--bg-2);
+}
+
+/* Popup menu tác vụ node (kebab) */
+.tree-popup-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+}
+.tree-popup {
+  position: fixed;
+  transform: translateX(-100%);
+  z-index: 41;
+  min-width: 172px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 12px 40px var(--shadow);
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+}
+.tree-popup button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  color: var(--text);
+  padding: 7px 10px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+.tree-popup button:hover {
+  background: var(--bg-3);
+}
+.tree-popup button.danger:hover {
+  background: color-mix(in srgb, var(--danger) 18%, transparent);
   color: var(--danger);
+}
+.tree-popup-sep {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 4px;
 }
 
 /* ============ Env switcher + topbar buttons ============ */
@@ -1067,13 +1123,6 @@ textarea:focus {
 .tg-meta { color: var(--text-dim); font-size: 12px; }
 .tg-run { color: var(--accent-2); font-size: 12px; }
 .cat-badge { font-size: 10px; padding: 1px 8px; border-radius: 10px; background: var(--bg-3); }
-
-/* Tree run button */
-.tree-run {
-  opacity: 0; background: none; border: none; color: var(--text-dim); font-size: 11px;
-}
-.tree-row:hover .tree-run { opacity: 1; }
-.tree-run:hover { color: #22c55e; }
 
 /* ============ Ops Workspace (P2-M1) ============ */
 .ops-modal {

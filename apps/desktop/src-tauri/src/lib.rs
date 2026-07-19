@@ -138,6 +138,8 @@ pub fn run() {
             commands::load_tab_session,
             commands::create_collection,
             commands::create_folder,
+            commands::duplicate_node,
+            commands::add_request,
             commands::save_request,
             commands::load_request,
             commands::delete_node,

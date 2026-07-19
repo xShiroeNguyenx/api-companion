@@ -238,6 +238,9 @@ interface AppStore {
   openRequest: (id: string) => Promise<void>;
   saveActive: (targetId: string, name: string) => Promise<void>;
   createCollection: (name: string) => Promise<void>;
+  createFolder: (parentId: string, name: string) => Promise<void>;
+  duplicateNode: (id: string) => Promise<void>;
+  addRequest: (parentId: string, name: string) => Promise<void>;
   deleteNode: (id: string) => Promise<void>;
   importPostman: (json: string) => Promise<void>;
   setActiveEnv: (name: string | null) => Promise<void>;
@@ -561,6 +564,23 @@ export const useStore = create<AppStore>((set, get) => ({
   createCollection: async (name) => {
     await ipc.createCollection(name);
     get().loadWorkspace();
+  },
+
+  createFolder: async (parentId, name) => {
+    await ipc.createFolder(parentId, name);
+    get().loadWorkspace();
+  },
+
+  duplicateNode: async (id) => {
+    const newId = await ipc.duplicateNode(id);
+    await get().loadWorkspace();
+    await get().openRequest(newId);
+  },
+
+  addRequest: async (parentId, name) => {
+    const newId = await ipc.addRequest(parentId, name);
+    await get().loadWorkspace();
+    await get().openRequest(newId);
   },
 
   deleteNode: async (id) => {

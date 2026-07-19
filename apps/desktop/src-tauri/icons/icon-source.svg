@@ -1,0 +1,20 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" gradientUnits="userSpaceOnUse" x1="120" y1="80" x2="920" y2="960">
+      <stop offset="0" stop-color="#5b6cff"/>
+      <stop offset="0.55" stop-color="#7c5cff"/>
+      <stop offset="1" stop-color="#9b4dff"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="0" y="0" width="1024" height="1024" rx="232" ry="232" fill="url(#bg)"/>
+
+  <!-- Braces { } — API/JSON -->
+  <g fill="none" stroke="#ffffff" stroke-width="48" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 404 286 C 360 286 350 320 350 372 L 350 452 C 350 486 336 500 300 512 C 336 524 350 538 350 572 L 350 652 C 350 704 360 738 404 738"/>
+    <path d="M 620 286 C 664 286 674 320 674 372 L 674 452 C 674 486 688 500 724 512 C 688 524 674 538 674 572 L 674 652 C 674 704 664 738 620 738"/>
+  </g>
+
+  <!-- Spark ✦ — AI -->
+  <path d="M 512 442 C 523 494 530 501 582 512 C 530 523 523 530 512 582 C 501 530 494 523 442 512 C 494 501 501 494 512 442 Z" fill="#ffffff"/>
+</svg>

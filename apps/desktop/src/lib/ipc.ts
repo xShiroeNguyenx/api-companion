@@ -126,6 +126,12 @@ export function createCollection(name: string): Promise<string> {
 export function createFolder(parentId: string, name: string): Promise<string> {
   return invoke<string>("create_folder", { parentId, name });
 }
+export function duplicateNode(id: string): Promise<string> {
+  return invoke<string>("duplicate_node", { id });
+}
+export function addRequest(parentId: string, name: string): Promise<string> {
+  return invoke<string>("add_request", { parentId, name });
+}
 export function saveRequest(targetId: string, name: string, spec: RequestSpec): Promise<string> {
   return invoke<string>("save_request", { targetId, name, spec });
 }
