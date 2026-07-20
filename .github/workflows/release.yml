@@ -1,6 +1,7 @@
 name: Release
 
-# Đẩy tag dạng v* (vd v0.4.0) → build installer mọi OS + tạo GitHub Release (draft, pre-release).
+# Đẩy tag dạng v* (vd v0.4.0) → build installer mọi OS + PUBLISH GitHub Release ngay
+# (không draft, không pre-release) để updater endpoint `releases/latest/...` thấy được.
 on:
   push:
     tags:
@@ -79,7 +80,9 @@ jobs:
             🚀 Từ v0.4.2 app có **auto-update**: bản sau chỉ cần bấm "Cập nhật & khởi động lại" trong app.
 
             ⚠️ Bản alpha **chưa ký số** — Windows SmartScreen sẽ cảnh báo khi cài lần đầu: bấm *More info → Run anyway*.
-          releaseDraft: true
-          prerelease: true
+          # Publish thẳng (không draft) + KHÔNG prerelease → GitHub coi là "latest",
+          # updater endpoint releases/latest/download/latest.json thấy được ngay sau khi push tag.
+          releaseDraft: false
+          prerelease: false
           includeUpdaterJson: true
           args: ${{ matrix.args }} --config src-tauri/tauri.release.conf.json

@@ -1,5 +1,7 @@
 # API Companion
 
+**Tiếng Việt** · [English](./README.en.md) · [日本語](./README.ja.md)
+
 > **"Everything about APIs"** — desktop app AI-first thay thế Postman.
 > Tauri v2 (Rust core + React) · Multi-provider AI (BYOK) · Ops Workspace · git-friendly.
 
@@ -7,6 +9,8 @@
 [![Release](https://github.com/xShiroeNguyenx/api-companion/actions/workflows/release.yml/badge.svg)](https://github.com/xShiroeNguyenx/api-companion/actions/workflows/release.yml)
 
 **Phiên bản: `0.4.3` — Public Alpha** · Windows-first · MIT License · 95 test pass
+
+🌐 **[Trang giới thiệu](https://xShiroeNguyenx.github.io/api-companion/)** · ⬇ **[Tải bản mới nhất](https://github.com/xShiroeNguyenx/api-companion/releases/latest)** · 🗺 **[Roadmap](./ROADMAP.md)** · 📋 **[Changelog](./CHANGELOG.md)**
 
 Không chỉ "Send Request": API Companion xoay quanh **toàn bộ vòng đời làm việc với API** — hiểu API, sinh request bằng ngôn ngữ tự nhiên, chẩn đoán lỗi, kiểm chứng dữ liệu trong DB, đọc log qua SSH — trong **một** ứng dụng nhẹ (~10MB).
 
@@ -155,11 +159,11 @@ docs/RELEASE.md  Hướng dẫn build & đóng gói release
 
 ## Roadmap
 
-Bản 0.4.0 hoàn tất **Phase 1 M0–M3** (HTTP core → daily driver → AI identity → smart & self-testing) + **Phase 2 P2-M1** (Ops SSH/DB) + hệ workspace đa vùng.
+Alpha hiện tại hoàn tất **Phase 1 M0–M3** (HTTP core → daily driver → AI identity → smart & self-testing) + **Phase 2 P2-M1** (Ops SSH/DB) + hệ workspace đa vùng, kèm bonus team workspace MySQL và auto-update.
 
-**Tiếp theo:** M4 GraphQL + WebSocket → M5 Diff Engine → M6 gRPC → M7 Plugin SDK (→ 1.0) · Phase 2: P2-M2 Docker/K8s → Secret Managers → Traffic Tools → Benchmark/Monitoring · Phase 3: Investigation Agent, Visual Flow, Marketplace.
+**Tiếp theo:** M4 GraphQL + WebSocket → M5 Diff Engine → M6 gRPC → M7 Plugin SDK (→ 1.0). Bảng đầy đủ 3 giai đoạn: **[ROADMAP.md](./ROADMAP.md)**.
 
-Chi tiết vision, kiến trúc, 3 giai đoạn: **[PLAN.md](./PLAN.md)** · Ý tưởng hoãn/đã làm: **[ICEBOX.md](./ICEBOX.md)** · Lịch sử thay đổi: **[CHANGELOG.md](./CHANGELOG.md)**.
+Chi tiết vision, kiến trúc: **[PLAN.md](./PLAN.md)** · Ý tưởng hoãn/đã làm: **[ICEBOX.md](./ICEBOX.md)** · Lịch sử thay đổi: **[CHANGELOG.md](./CHANGELOG.md)**.
 
 ---
 

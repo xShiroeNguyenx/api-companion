@@ -13,13 +13,17 @@
 
 ---
 
-## Trạng thái thực thi (cập nhật 2026-07-18)
+## Trạng thái thực thi (cập nhật 2026-07-20)
 
-**Đã ship trong `v0.4.0` (Public Alpha):**
+> Bảng roadmap tổng quan + trạng thái từng milestone: xem [ROADMAP.md](./ROADMAP.md). Mục này tóm tắt những gì đã ship.
+
+**Đã ship (Public Alpha, mới nhất `v0.4.3`):**
 
 - ✅ **Phase 1 · M0–M3**: HTTP core + app shell → Collections/Env/Variables (daily driver) → AI identity (BYOK Generate/Explain) → Smart variables + assertion runner + AI Diagnose + Generate Test Cases.
 - ✅ **Phase 2 · P2-M1**: Ops Workspace — SSH command runner + DB query runner (read-only enforced).
-- ✅ **Bonus (ngoài roadmap gốc)**: multi-workspace registry (personal/shared/team) + namespace secret theo workspace + persist/restore tabs per-workspace + code generation đa ngôn ngữ; Postman bulk import; export native bundle + Postman; **team workspace MySQL** (v0.4.2 — mirror + 3-way sync, crate `workspace-sync`).
+- ✅ **Bonus (ngoài roadmap gốc)**: multi-workspace registry (personal/shared/team) + namespace secret theo workspace + persist/restore tabs per-workspace + code generation đa ngôn ngữ; Postman bulk import; export native bundle + Postman.
+- ✅ **`v0.4.2`**: **team workspace MySQL** (mirror + 3-way sync, crate `workspace-sync`) + **auto-update** (`tauri-plugin-updater`, ký minisign qua CI).
+- ✅ **`v0.4.3`**: badge version trên toolbar (xác nhận auto-update); release CI publish thẳng (không draft) + GitHub Pages cho landing page.
 - 📊 95 test Rust pass; frontend typecheck + bundle sạch. Xem [CHANGELOG.md](./CHANGELOG.md).
 
 **Chưa làm (theo roadmap):** M4 GraphQL/WebSocket · M5 Diff Engine · M6 gRPC · M7 Plugin SDK · Phase 2 P2-M2…M5 · toàn bộ Phase 3. **1.0.0 = hết Phase 1 (M7).**

@@ -83,7 +83,7 @@ App dùng `tauri-plugin-updater`: check `latest.json` trên GitHub Releases (end
 - Updater artifacts (`.sig`, `latest.json`) chỉ bật trong CI qua `--config src-tauri/tauri.release.conf.json` → **build local không cần key**. Muốn test updater cục bộ: set env `TAURI_SIGNING_PRIVATE_KEY_PATH` rồi build với config đó.
 - Lưu ý: chỉ bản cài **từ v0.4.2 trở đi** có updater; user bản cũ hơn vẫn tải installer thủ công một lần.
 
-> ⚠️ **Gotcha khi test updater**: endpoint dùng `releases/latest/download/latest.json`. GitHub coi `/latest/` là release **không phải draft và không phải pre-release**. Workflow tạo draft + prerelease, nên khi publish để updater thấy được, phải **bỏ tick "Set as a pre-release"** và **tick "Set as the latest release"**. Nếu để nguyên pre-release, app sẽ báo "đã mới nhất" dù đã có bản cao hơn. (Muốn giữ nhãn pre-release mà vẫn update được thì đổi endpoint sang URL tag cụ thể — nhưng phải sửa mỗi lần release, không nên.)
+> ℹ️ **Về endpoint `releases/latest/`**: GitHub coi `/latest/` là release **không phải draft và không phải pre-release**. `release.yml` đã set `releaseDraft: false` + `prerelease: false` nên publish xong là updater thấy ngay. Nếu tự publish tay thì đừng tick pre-release.
 
 ## 4b. Code signing Windows (hoãn tới beta)
 
@@ -95,21 +95,23 @@ Trước beta (M5): mua **code signing certificate** (hoặc dùng Azure Trusted
 
 ## 5. Phát hành qua CI/CD (khuyến nghị)
 
-Workflow `release.yml` tự động build 3 OS + tạo release khi có tag `v*`:
+Workflow `release.yml` tự động build 3 OS + **publish thẳng** release khi có tag `v*`:
 
 1. Hoàn tất [checklist §2](#2-checklist-trước-khi-release) + commit toàn bộ (version bump + CHANGELOG).
 2. **Tag & push** (chạy thủ công — theo quy tắc repo, không tự commit hộ):
    ```bash
-   git tag -a v0.4.0 -m "API Companion v0.4.0 — Public Alpha"
-   git push origin v0.4.0
+   git tag -a v0.4.3 -m "API Companion v0.4.3"
+   git push origin v0.4.3
    ```
-3. GitHub Actions chạy `release.yml`: build Windows (`.exe`/`.msi`), macOS (`.dmg` universal), Linux (`.deb`/`.AppImage`) → tạo **draft pre-release** kèm artifact.
-4. Vào **Releases** trên GitHub: kiểm tra draft, dán/tinh chỉnh release notes từ CHANGELOG, bấm **Publish**.
+3. GitHub Actions chạy `release.yml`: build Windows (`.exe`/`.msi`), macOS (`.dmg` universal), Linux (`.deb`/`.AppImage`), ký `.sig` + sinh `latest.json` → **publish release ngay** (không draft, không pre-release) kèm artifact.
+4. Release là "latest" → updater endpoint `releases/latest/download/latest.json` thấy được ngay, app các bản cũ tự nhận cập nhật. Không cần thao tác tay.
 
-**Yêu cầu:** repo bật GitHub Actions; `GITHUB_TOKEN` mặc định có sẵn (workflow đã khai `permissions: contents: write`). Không cần secret thêm cho bản alpha (chưa ký số).
+**Yêu cầu:** repo bật GitHub Actions; `GITHUB_TOKEN` mặc định có sẵn (`permissions: contents: write`); **secret `TAURI_SIGNING_PRIVATE_KEY`** (xem [§4](#4-auto-update--ký-artifact-có-từ-v042)) — thiếu là build fail.
+
+> Muốn giữ lại bước duyệt trước khi công bố: đổi `releaseDraft: true` trong `release.yml` rồi tự Publish trên GitHub (nhưng nhớ **không** tick pre-release, nếu không updater `/latest/` sẽ bỏ qua).
 
 ### Phát hành thủ công (fallback, không dùng CI)
-Nếu không dùng CI: build cục bộ theo [§3](#3-build-installer) rồi **Releases → Draft a new release** → chọn tag → upload `*-setup.exe` / `*.msi` từ `target/release/bundle/` → tick *pre-release* → Publish.
+Nếu không dùng CI: build cục bộ theo [§3](#3-build-installer) rồi **Releases → Draft a new release** → chọn tag → upload `*-setup.exe` / `*.msi` từ `target/release/bundle/` (+ `.sig` và `latest.json` nếu muốn updater chạy) → **Publish** (không tick pre-release).
 
 > Auto-update đã bật từ v0.4.2 (xem [§4](#4-auto-update--ký-artifact-có-từ-v042)) — release qua CI sẽ tự sinh `.sig` + `latest.json`; **nhớ thêm secret `TAURI_SIGNING_PRIVATE_KEY` trước khi push tag**, thiếu secret build release sẽ fail có chủ đích.
 
