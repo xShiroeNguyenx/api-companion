@@ -23,6 +23,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      # crate `secrets` dùng keyring feature `sync-secret-service` → libdbus-sys (binding C)
+      # cần dbus-1 + pkg-config. ubuntu-latest có sẵn libdbus runtime nhưng THIẾU gói -dev.
+      - name: Install Linux deps (dbus cho keyring)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libdbus-1-dev pkg-config
+
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - name: cargo test (bỏ app Tauri)
