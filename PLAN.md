@@ -9,7 +9,7 @@
 | **AI** | Multi-provider BYOK — Claude (mặc định) + OpenAI + Gemini + Ollama |
 | **Quy mô** | Solo dev + AI-assisted coding (Claude Code) |
 | **Ngày lập plan** | 2026-07-13 |
-| **Phiên bản hiện tại** | **`0.4.1` — Public Alpha** (cập nhật 2026-07-19) |
+| **Phiên bản hiện tại** | **`0.4.2` — Public Alpha** (cập nhật 2026-07-20) |
 
 ---
 
@@ -19,8 +19,8 @@
 
 - ✅ **Phase 1 · M0–M3**: HTTP core + app shell → Collections/Env/Variables (daily driver) → AI identity (BYOK Generate/Explain) → Smart variables + assertion runner + AI Diagnose + Generate Test Cases.
 - ✅ **Phase 2 · P2-M1**: Ops Workspace — SSH command runner + DB query runner (read-only enforced).
-- ✅ **Bonus (ngoài roadmap gốc)**: multi-workspace registry (personal/shared) + namespace secret theo workspace + persist/restore tabs per-workspace + code generation đa ngôn ngữ; Postman bulk import; export native bundle + Postman.
-- 📊 81 test Rust pass; frontend typecheck + bundle sạch. Xem [CHANGELOG.md](./CHANGELOG.md).
+- ✅ **Bonus (ngoài roadmap gốc)**: multi-workspace registry (personal/shared/team) + namespace secret theo workspace + persist/restore tabs per-workspace + code generation đa ngôn ngữ; Postman bulk import; export native bundle + Postman; **team workspace MySQL** (v0.4.2 — mirror + 3-way sync, crate `workspace-sync`).
+- 📊 95 test Rust pass; frontend typecheck + bundle sạch. Xem [CHANGELOG.md](./CHANGELOG.md).
 
 **Chưa làm (theo roadmap):** M4 GraphQL/WebSocket · M5 Diff Engine · M6 gRPC · M7 Plugin SDK · Phase 2 P2-M2…M5 · toàn bộ Phase 3. **1.0.0 = hết Phase 1 (M7).**
 
@@ -576,7 +576,7 @@ README + docs site tối giản (để đến alpha M3); mỗi milestone kết t
 | M1 | Internal build, dogfood cá nhân |
 | M2 | Private alpha (5–10 dev quen, Discord/Telegram feedback) |
 | **M3 → `v0.4.0`** | ✅ **Public alpha ĐÃ SHIP** — GitHub Releases, Windows trước (chưa ký số, chấp nhận SmartScreen); macOS/Linux "best effort" từ CI matrix. Xem [docs/RELEASE.md](./docs/RELEASE.md) |
-| M5 | Beta + bật `tauri-plugin-updater` + mua code signing |
+| M5 | Beta + mua code signing (updater đã bật sớm từ `0.4.2`) |
 | M7 | **1.0** |
 
 Cadence: mỗi milestone = một tagged release + patch release cho bug daily-driver. Code signing Windows: chấp nhận SmartScreen warning ở alpha, mua cert (hoặc Azure Trusted Signing) trước beta. CI build matrix 3 OS từ M1 để phát hiện lệch sớm.
@@ -584,7 +584,7 @@ Cadence: mỗi milestone = một tagged release + patch release cho bug daily-dr
 ### Versioning
 
 - App: `0.<milestone>.<patch>` trong Phase 1 (M3 → 0.3.x); **1.0.0 = hết Phase 1**; Phase 2 = 1.x minors, Phase 3 = 2.x.
-  - **Hiện tại: `0.4.1`** — public alpha M3 cộng thêm P2-M1 (Ops) + workspace registry đã vượt M3 nên bump minor lên `.4`; `0.4.1` là patch daily-driver (menu kebab + Nhân bản, fix layout, icon mới). M4 sẽ là `0.5.0`.
+  - **Hiện tại: `0.4.2`** — public alpha M3 cộng thêm P2-M1 (Ops) + workspace registry đã vượt M3 nên bump minor lên `.4`; `0.4.1` là patch daily-driver (menu kebab + Nhân bản, fix layout); `0.4.2` thêm **team workspace MySQL** + icon full-bleed + fix chiều cao button modal. M4 sẽ là `0.5.0`.
 - Plugin SDK: version độc lập, `0.x-experimental` cho tới P3-M5.
 - File formats: `schemaVersion` riêng ngay từ M1 + migration code — đổi format sau alpha mà không migrate được là mất user.
 

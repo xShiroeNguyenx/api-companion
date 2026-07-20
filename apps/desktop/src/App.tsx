@@ -19,7 +19,9 @@ import { RunReportModal } from "./components/RunReportModal";
 import { OpsModal } from "./components/OpsModal";
 import { ExportModal } from "./components/ExportModal";
 import { WorkspaceManager } from "./components/WorkspaceManager";
+import { TeamWorkspaceModal } from "./components/TeamWorkspaceModal";
 import { CodegenModal } from "./components/CodegenModal";
+import { UpdateBanner } from "./components/UpdateBanner";
 
 export default function App() {
   const theme = useStore((s) => s.theme);
@@ -47,9 +49,27 @@ export default function App() {
       const id = useStore.getState().activeWorkspaceId;
       // resetIfEmpty=false: lần đầu chưa có session thì giữ tab mặc định.
       if (id) await useStore.getState().hydrateSession(id, false);
+      // Team workspace: kéo thay đổi mới nhất từ MySQL khi mở app.
+      if (useStore.getState().isTeamActive()) void useStore.getState().syncTeamWs();
     })();
     loadAiSettings();
   }, [loadHistory, loadWorkspace, loadWorkspaces, migrateRecents, loadAiSettings]);
+
+  // Team workspace: poll đồng bộ nền mỗi 30s (chỉ chạy khi workspace active là team).
+  useEffect(() => {
+    const t = window.setInterval(() => {
+      void useStore.getState().syncTeamWs();
+    }, 30_000);
+    return () => window.clearInterval(t);
+  }, []);
+
+  // Auto-update: check im lặng 5s sau khi mở app (offline/chưa có release → bỏ qua).
+  useEffect(() => {
+    const t = window.setTimeout(() => {
+      void useStore.getState().checkUpdate(true);
+    }, 5_000);
+    return () => window.clearTimeout(t);
+  }, []);
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -102,7 +122,9 @@ export default function App() {
       <OpsModal />
       <ExportModal />
       <WorkspaceManager />
+      <TeamWorkspaceModal />
       <CodegenModal />
+      <UpdateBanner />
     </div>
   );
 }

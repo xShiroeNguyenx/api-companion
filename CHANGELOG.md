@@ -8,6 +8,32 @@ project tuân [Semantic Versioning](https://semver.org/lang/vi/) với quy ướ
 
 _(chưa có)_
 
+## [0.4.2] — 2026-07-20
+
+### Added
+- **🗄 Team workspace (MySQL)** — cả team dùng chung MỘT workspace qua MySQL server tự dựng: mỗi thành viên chỉ nhập thông tin kết nối (menu workspace → *Thêm team workspace (MySQL)…*) là vào chung workspace và tự kéo toàn bộ nội dung về.
+  - **Kiến trúc mirror + sync**: nội dung vẫn là file TOML trong thư mục cache local (mọi tính năng file-based dùng nguyên vẹn); crate mới `workspace-sync` đồng bộ 3 chiều (local/remote/base) theo từng file.
+  - **Đồng bộ tự động**: khi mở app/chuyển workspace, sau mỗi thao tác ghi (debounce 1.5s), poll nền 30s + nút *⟳ Đồng bộ ngay*. Xoá đồng bộ qua tombstone.
+  - **Conflict an toàn**: hai người sửa cùng file → server thắng, bản local giữ thành `*-conflict-*.toml` và đẩy lên cho cả team thấy — không mất dữ liệu của ai. Riêng `active_environment` là lựa chọn cá nhân, không bị sync đè.
+  - **An toàn database hệ thống**: setup chỉ `CREATE DATABASE/TABLE IF NOT EXISTS` với database MỚI (mặc định `apic_workspace`, tên được validate chống injection) + 2 bảng `apic_files`/`apic_meta` — không bao giờ đụng database khác; mở lại/kết nối thêm người là idempotent, không ghi đè.
+  - **Tương thích MySQL cũ**: không ép storage engine (server chỉ có MyISAM vẫn chạy — hết lỗi 1286), PK dạng `path_hash` CHAR(64) tránh giới hạn key 767/1000 bytes của InnoDB cũ/MyISAM. Hỗ trợ MySQL 5.7+/MariaDB 10.2+ (khuyến nghị), user cần quyền `CREATE`.
+  - Password MySQL chỉ nằm trong **OS keychain** từng máy (scope theo workspace), không ghi vào file hay lên server. Registry SQLite migration **v5** (`remote_json`), kind workspace mới `team`.
+- **🚀 Auto-update** (`tauri-plugin-updater`, sớm hơn kế hoạch M5): app tự kiểm tra bản mới 5s sau khi mở (im lặng nếu offline/chưa có release) + lệnh *Check for Updates…* trong command palette → banner "Có bản mới" với tiến độ tải → **Cập nhật & khởi động lại** một chạm (tab đang mở được lưu lại trước khi restart).
+  - Artifact update được **ký minisign** (không cần cert Windows), app verify bằng public key nhúng sẵn; endpoint = `latest.json` trên GitHub Releases (CI `release.yml` tự sinh + upload qua `tauri-action`).
+  - Update qua updater chạy NSIS passive → **không gặp lại cảnh báo SmartScreen** sau lần cài đầu.
+  - Build local không cần private key (updater artifacts chỉ bật trong CI qua `tauri.release.conf.json`). Lưu ý: chỉ các bản cài **từ v0.4.2 trở đi** mới tự update được.
+
+### Changed
+- **Icon app mới (full-bleed)**: đổi sang icon robot `{ }` + paper-plane từ `api-icon.png`, tự động crop viền trong suốt và phóng to chạm mép canvas → nhìn rõ ở taskbar/tray thay vì bị bé một góc. Nguồn 1024px lưu tại `apps/desktop/src-tauri/icons/icon-source-1024.png`.
+- Hint chia sẻ team trong menu workspace: bổ sung hướng dẫn dùng Team workspace (MySQL) bên cạnh cách OneDrive/Google Drive/Dropbox/network drive.
+
+### Fixed
+- **Chiều cao button trong modal**: `.send` (nút Đóng/Lưu/Import… của mọi modal) không có chiều cao tối thiểu nên bị co sát chữ như vỡ layout → thêm `min-height: 32px` + căn giữa flex; nút `.chip` (Copy…) thêm `min-height: 28px`. Sửa một chỗ ăn toàn bộ ~20 modal.
+
+### Kiểm định
+- 95 test Rust pass (thêm 14 test mới: sync plan 3 chiều, conflict, tombstone, validate tên DB, path-traversal guard, migration registry v5); frontend `tsc --noEmit` + vite build sạch.
+- ⚠️ Sync engine đã có unit test đầy đủ phần logic; khuyến nghị smoke-test end-to-end với MySQL server thật (tạo → sửa → mở máy thứ hai) trước khi công bố rộng.
+
 ## [0.4.1] — 2026-07-19
 
 ### Added
@@ -86,6 +112,7 @@ Bản phát hành công khai đầu tiên: HTTP client AI-first (M0–M3) + Ops 
 - macOS/Linux: build best-effort, chưa test kỹ.
 - Chưa có: GraphQL/WebSocket/gRPC (M4/M6), diff engine (M5), git panel, drag-drop node, rename giữ tên folder gốc. Xem [ICEBOX.md](./ICEBOX.md).
 
-[Unreleased]: https://github.com/OWNER/api-companion/compare/v0.4.1...HEAD
-[0.4.1]: https://github.com/OWNER/api-companion/compare/v0.4.0...v0.4.1
-[0.4.0]: https://github.com/OWNER/api-companion/releases/tag/v0.4.0
+[Unreleased]: https://github.com/xShiroeNguyenx/api-companion/compare/v0.4.2...HEAD
+[0.4.2]: https://github.com/xShiroeNguyenx/api-companion/compare/v0.4.1...v0.4.2
+[0.4.1]: https://github.com/xShiroeNguyenx/api-companion/compare/v0.4.0...v0.4.1
+[0.4.0]: https://github.com/xShiroeNguyenx/api-companion/releases/tag/v0.4.0

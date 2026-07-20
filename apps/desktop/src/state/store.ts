@@ -16,9 +16,11 @@ import type {
   WorkspaceInfo,
   WorkspaceKind,
   WorkspaceMeta,
+  WsSyncReport,
 } from "../types";
 import { defaultSpec } from "../types";
 import * as ipc from "../lib/ipc";
+import * as updater from "../lib/updater";
 
 export type BodyMode = "none" | "json" | "text" | "form" | "multipart" | "binary";
 
@@ -61,6 +63,8 @@ export interface PersistedTab {
 
 /** Khoá auto-save trong lúc hydrate để không ghi đè session đang khôi phục. */
 let suppressPersist = false;
+/** Debounce timer cho auto-sync team workspace sau mỗi thao tác ghi. */
+let teamSyncTimer: number | undefined;
 
 function newId(): string {
   return crypto.randomUUID();
@@ -180,6 +184,15 @@ interface AppStore {
   workspaces: WorkspaceMeta[];
   activeWorkspaceId: string | null;
   wsManagerOpen: boolean;
+  // Team workspace (MySQL)
+  teamWsOpen: boolean;
+  syncBusy: boolean;
+  lastSync: { at: number; report: WsSyncReport } | null;
+  // Auto-update
+  updateInfo: updater.UpdateInfo | null;
+  updateBusy: boolean;
+  updatePct: number | null;
+  updateMsg: string | null; // thông báo transient: "mới nhất" / lỗi
   theme: "dark" | "light";
   paletteOpen: boolean;
   curlImportOpen: boolean;
@@ -232,6 +245,23 @@ interface AppStore {
   removeWorkspace: (id: string) => Promise<void>;
   migrateRecents: () => Promise<void>;
   setWsManagerOpen: (open: boolean) => void;
+  // Team workspace (MySQL)
+  setTeamWsOpen: (open: boolean) => void;
+  isTeamActive: () => boolean;
+  addTeamWorkspace: (form: {
+    name: string;
+    host: string;
+    port: number;
+    username: string;
+    password: string;
+    database: string;
+  }) => Promise<void>;
+  syncTeamWs: () => Promise<void>;
+  scheduleTeamSync: () => void;
+  // Auto-update
+  checkUpdate: (silent: boolean) => Promise<void>;
+  installUpdate: () => Promise<void>;
+  dismissUpdate: () => void;
   // Persist & restore tabs theo workspace
   persistSession: () => Promise<void>;
   hydrateSession: (id: string, resetIfEmpty: boolean) => Promise<void>;
@@ -289,6 +319,13 @@ export const useStore = create<AppStore>((set, get) => ({
   workspaces: [],
   activeWorkspaceId: null,
   wsManagerOpen: false,
+  teamWsOpen: false,
+  syncBusy: false,
+  lastSync: null,
+  updateInfo: null,
+  updateBusy: false,
+  updatePct: null,
+  updateMsg: null,
   theme: (localStorage.getItem("theme") as "dark" | "light") || "dark",
   paletteOpen: false,
   curlImportOpen: false,
@@ -454,6 +491,8 @@ export const useStore = create<AppStore>((set, get) => ({
     await get().loadWorkspaces();
     get().loadHistory();
     get().loadConnections();
+    // Team workspace: kéo thay đổi mới nhất từ MySQL ngay khi mở.
+    if (get().isTeamActive()) void get().syncTeamWs();
   },
 
   addWorkspaceFolder: async (path, name, kind) => {
@@ -491,6 +530,94 @@ export const useStore = create<AppStore>((set, get) => ({
   },
 
   setWsManagerOpen: (open) => set({ wsManagerOpen: open }),
+
+  setTeamWsOpen: (open) => set({ teamWsOpen: open }),
+
+  isTeamActive: () => {
+    const s = get();
+    const w = s.workspaces.find((x) => x.id === s.activeWorkspaceId);
+    return w?.kind === "team" || !!w?.remote;
+  },
+
+  addTeamWorkspace: async (form) => {
+    const meta = await ipc.teamWsAdd(
+      form.name,
+      form.host,
+      form.port,
+      form.username,
+      form.password,
+      form.database,
+    );
+    await get().loadWorkspaces();
+    set({ teamWsOpen: false });
+    await get().activateWorkspace(meta.id);
+    // Nếu meta.id đã là workspace active (re-add) thì activate bỏ qua — vẫn refresh tree.
+    await get().loadWorkspace();
+  },
+
+  syncTeamWs: async () => {
+    if (!get().isTeamActive() || get().syncBusy) return;
+    set({ syncBusy: true });
+    try {
+      const report = await ipc.teamWsSync();
+      set({ lastSync: { at: Date.now(), report } });
+      // Có thay đổi kéo về → refresh tree/env cho UI.
+      if (report.pulled + report.deleted_local + report.conflicts.length > 0) {
+        await get().loadWorkspace();
+      }
+    } catch (e) {
+      console.warn("[team-sync]", e);
+    } finally {
+      set({ syncBusy: false });
+    }
+  },
+
+  scheduleTeamSync: () => {
+    if (!get().isTeamActive()) return;
+    if (teamSyncTimer !== undefined) window.clearTimeout(teamSyncTimer);
+    teamSyncTimer = window.setTimeout(() => {
+      teamSyncTimer = undefined;
+      void get().syncTeamWs();
+    }, 1500);
+  },
+
+  checkUpdate: async (silent) => {
+    if (get().updateBusy) return;
+    set({ updateBusy: true, updateMsg: null });
+    try {
+      const info = await updater.checkForUpdate();
+      if (info) {
+        set({ updateInfo: info });
+      } else if (!silent) {
+        set({ updateMsg: "✓ Bạn đang dùng bản mới nhất" });
+        window.setTimeout(() => set({ updateMsg: null }), 4000);
+      }
+    } catch (e) {
+      // Auto-check lúc boot lỗi (offline, chưa có release...) → im lặng.
+      if (!silent) {
+        set({ updateMsg: `Không kiểm tra được cập nhật: ${e}` });
+        window.setTimeout(() => set({ updateMsg: null }), 6000);
+      }
+    } finally {
+      set({ updateBusy: false });
+    }
+  },
+
+  installUpdate: async () => {
+    if (get().updateBusy || !get().updateInfo) return;
+    set({ updateBusy: true, updatePct: 0 });
+    try {
+      // Lưu tab đang mở trước khi app tự restart.
+      await get().persistSession();
+      await updater.downloadAndInstall((pct) => set({ updatePct: pct }));
+      // relaunch() sẽ thay thế process — không chạy tới đây.
+    } catch (e) {
+      set({ updateMsg: `Cập nhật thất bại: ${e}`, updateBusy: false, updatePct: null });
+      window.setTimeout(() => set({ updateMsg: null }), 8000);
+    }
+  },
+
+  dismissUpdate: () => set({ updateInfo: null, updatePct: null }),
 
   persistSession: async () => {
     if (suppressPersist) return;
@@ -559,39 +686,46 @@ export const useStore = create<AppStore>((set, get) => ({
     setTab(set, tab.id, { savedId: id, name, collectionId });
     set({ saveOpen: false });
     get().loadWorkspace();
+    get().scheduleTeamSync();
   },
 
   createCollection: async (name) => {
     await ipc.createCollection(name);
     get().loadWorkspace();
+    get().scheduleTeamSync();
   },
 
   createFolder: async (parentId, name) => {
     await ipc.createFolder(parentId, name);
     get().loadWorkspace();
+    get().scheduleTeamSync();
   },
 
   duplicateNode: async (id) => {
     const newId = await ipc.duplicateNode(id);
     await get().loadWorkspace();
     await get().openRequest(newId);
+    get().scheduleTeamSync();
   },
 
   addRequest: async (parentId, name) => {
     const newId = await ipc.addRequest(parentId, name);
     await get().loadWorkspace();
     await get().openRequest(newId);
+    get().scheduleTeamSync();
   },
 
   deleteNode: async (id) => {
     await ipc.deleteNode(id);
     get().loadWorkspace();
+    get().scheduleTeamSync();
   },
 
   importPostman: async (json) => {
     await ipc.importPostman(json);
     set({ postmanOpen: false });
     get().loadWorkspace();
+    get().scheduleTeamSync();
   },
 
   setActiveEnv: async (name) => {

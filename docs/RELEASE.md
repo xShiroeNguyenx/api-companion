@@ -32,7 +32,7 @@ pnpm install     # cài dependency frontend + tauri cli (devDependency)
 
 1. **Test xanh:**
    ```bash
-   cargo test                                        # 81 test Rust
+   cargo test                                        # 95 test Rust
    pnpm --filter api-companion-desktop build         # tsc --noEmit + vite build
    ```
 2. **Smoke test GUI:** `pnpm dev` → thử gửi request thật, đổi environment, đổi workspace (tab khôi phục), AI generate (nếu có key), Ops query.
@@ -70,9 +70,22 @@ target/release/bundle/msi/API Companion_0.4.0_x64_en-US.msi    # installer MSI
 
 ---
 
-## 4. Code signing (hoãn tới beta)
+## 4. Auto-update & ký artifact (có từ v0.4.2)
 
-Bản alpha **chưa ký số** → Windows SmartScreen sẽ cảnh báo "Windows protected your PC" khi cài. Hướng dẫn người dùng: **More info → Run anyway**.
+App dùng `tauri-plugin-updater`: check `latest.json` trên GitHub Releases (endpoint + public key minisign nằm trong `tauri.conf.json > plugins > updater`), tải bản mới, verify chữ ký rồi cài passive + relaunch. UI: banner tự hiện khi có bản mới + lệnh *Check for Updates…* trong palette.
+
+**Chữ ký minisign (KHÔNG phải cert Windows):**
+
+- Keypair tạo bằng `pnpm tauri signer generate`. Public key → `tauri.conf.json`; **private key KHÔNG commit** — hiện giữ tại `C:\Users\DELL\.tauri\api-companion-updater.key` (máy dev chính). **Backup file này cẩn thận: mất key = không phát hành update được cho user cũ.**
+- CI cần 2 secret (Settings → Secrets and variables → Actions):
+  - `TAURI_SIGNING_PRIVATE_KEY` = **nội dung** file private key
+  - `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` = password của key (key hiện tại không đặt password → tạo secret giá trị rỗng hoặc bỏ qua)
+- Updater artifacts (`.sig`, `latest.json`) chỉ bật trong CI qua `--config src-tauri/tauri.release.conf.json` → **build local không cần key**. Muốn test updater cục bộ: set env `TAURI_SIGNING_PRIVATE_KEY_PATH` rồi build với config đó.
+- Lưu ý: chỉ bản cài **từ v0.4.2 trở đi** có updater; user bản cũ hơn vẫn tải installer thủ công một lần.
+
+## 4b. Code signing Windows (hoãn tới beta)
+
+Bản alpha **chưa ký số** → Windows SmartScreen sẽ cảnh báo "Windows protected your PC" khi cài **lần đầu** (update qua updater không gặp lại cảnh báo). Hướng dẫn người dùng: **More info → Run anyway**.
 
 Trước beta (M5): mua **code signing certificate** (hoặc dùng Azure Trusted Signing), cấu hình trong `tauri.conf.json > bundle > windows > certificateThumbprint` / signing qua CI secret. Ký giảm/loại cảnh báo SmartScreen.
 
@@ -96,7 +109,7 @@ Workflow `release.yml` tự động build 3 OS + tạo release khi có tag `v*`:
 ### Phát hành thủ công (fallback, không dùng CI)
 Nếu không dùng CI: build cục bộ theo [§3](#3-build-installer) rồi **Releases → Draft a new release** → chọn tag → upload `*-setup.exe` / `*.msi` từ `target/release/bundle/` → tick *pre-release* → Publish.
 
-> Auto-update (`tauri-plugin-updater`) bật từ M5/beta — alpha chưa có, người dùng tải thủ công.
+> Auto-update đã bật từ v0.4.2 (xem [§4](#4-auto-update--ký-artifact-có-từ-v042)) — release qua CI sẽ tự sinh `.sig` + `latest.json`; **nhớ thêm secret `TAURI_SIGNING_PRIVATE_KEY` trước khi push tag**, thiếu secret build release sẽ fail có chủ đích.
 
 ---
 

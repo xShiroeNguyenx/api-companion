@@ -13,8 +13,13 @@ function WsRow({ ws, canRemove }: { ws: WorkspaceMeta; canRemove: boolean }) {
     if (n !== ws.name) update(ws.id, n, ws.kind, ws.color);
   }
 
+  const isTeam = ws.kind === "team" || !!ws.remote;
+
   return (
-    <div className={"wm-row" + (ws.available ? "" : " ws-unavailable")} title={ws.path}>
+    <div
+      className={"wm-row" + (ws.available ? "" : " ws-unavailable")}
+      title={ws.remote ? `MySQL: ${ws.remote.host}:${ws.remote.port}/${ws.remote.database}` : ws.path}
+    >
       <input
         className="wm-name"
         value={name}
@@ -22,14 +27,18 @@ function WsRow({ ws, canRemove }: { ws: WorkspaceMeta; canRemove: boolean }) {
         onBlur={commitName}
         onKeyDown={(e) => e.key === "Enter" && (e.target as HTMLInputElement).blur()}
       />
-      <select
-        className="wm-kind"
-        value={ws.kind}
-        onChange={(e) => update(ws.id, ws.name, e.target.value as WorkspaceKind, ws.color)}
-      >
-        <option value="personal">📁 Personal</option>
-        <option value="shared">👥 Shared</option>
-      </select>
+      {isTeam ? (
+        <span className="wm-kind wm-kind-team">🗄 Team (MySQL)</span>
+      ) : (
+        <select
+          className="wm-kind"
+          value={ws.kind}
+          onChange={(e) => update(ws.id, ws.name, e.target.value as WorkspaceKind, ws.color)}
+        >
+          <option value="personal">📁 Personal</option>
+          <option value="shared">👥 Shared</option>
+        </select>
+      )}
       <div className="wm-colors">
         <button
           className={"wm-swatch wm-none" + (ws.color ? "" : " sel")}
@@ -65,6 +74,7 @@ export function WorkspaceManager() {
   const setOpen = useStore((s) => s.setWsManagerOpen);
   const workspaces = useStore((s) => s.workspaces);
   const addWorkspaceFolder = useStore((s) => s.addWorkspaceFolder);
+  const setTeamWsOpen = useStore((s) => s.setTeamWsOpen);
 
   if (!openFlag) return null;
 
@@ -88,6 +98,15 @@ export function WorkspaceManager() {
         <div className="modal-actions">
           <button className="chip" onClick={addFolder}>
             ➕ Thêm thư mục…
+          </button>
+          <button
+            className="chip"
+            onClick={() => {
+              setOpen(false);
+              setTeamWsOpen(true);
+            }}
+          >
+            🗄 Thêm team workspace (MySQL)…
           </button>
           <button className="send" onClick={() => setOpen(false)}>
             Đóng

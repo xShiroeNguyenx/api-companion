@@ -28,7 +28,7 @@ pub enum StorageError {
     NotFound(String),
 }
 
-const SCHEMA_VERSION: i64 = 4;
+const SCHEMA_VERSION: i64 = 5;
 
 /// Mở/khởi tạo database tại `path`, chạy migration nếu cần.
 pub fn init(path: &Path) -> Result<Connection, StorageError> {
@@ -95,6 +95,10 @@ fn migrate(conn: &Connection) -> Result<(), StorageError> {
                 ON workspaces(is_active) WHERE is_active = 1;",
         )?;
     }
+    if current < 5 {
+        // v5: team workspace — cấu hình MySQL (JSON, không chứa password) cho kind='team'.
+        conn.execute_batch("ALTER TABLE workspaces ADD COLUMN remote_json TEXT;")?;
+    }
     conn.pragma_update(None, "user_version", SCHEMA_VERSION)?;
     Ok(())
 }
@@ -121,10 +125,12 @@ pub fn get_setting(conn: &Connection, key: &str) -> Result<Option<String>, Stora
 // Registry đa-workspace (v4)
 // ---------------------------------------------------------------------------
 
-const WS_COLS: &str = "id, name, path, kind, color, is_active, created_at, last_opened_at";
+const WS_COLS: &str =
+    "id, name, path, kind, color, is_active, created_at, last_opened_at, remote_json";
 
 fn row_to_workspace(row: &rusqlite::Row) -> rusqlite::Result<WorkspaceMeta> {
     let kind_str: String = row.get(3)?;
+    let remote_json: Option<String> = row.get(8)?;
     Ok(WorkspaceMeta {
         id: row.get(0)?,
         name: row.get(1)?,
@@ -132,6 +138,7 @@ fn row_to_workspace(row: &rusqlite::Row) -> rusqlite::Result<WorkspaceMeta> {
         kind: WorkspaceKind::from_str_lossy(&kind_str),
         color: row.get(4)?,
         is_active: row.get::<_, i64>(5)? != 0,
+        remote: remote_json.and_then(|s| serde_json::from_str(&s).ok()),
         created_at: row.get(6)?,
         last_opened_at: row.get(7)?,
         available: true, // runtime — tầng command tính lại bằng path.exists()
@@ -180,15 +187,27 @@ pub fn upsert_workspace_by_path(
     kind: WorkspaceKind,
     color: Option<&str>,
 ) -> Result<WorkspaceMeta, StorageError> {
+    upsert_workspace_full(conn, name, norm_path, kind, color, None)
+}
+
+/// Như `upsert_workspace_by_path` nhưng kèm cấu hình remote (team workspace, JSON).
+pub fn upsert_workspace_full(
+    conn: &Connection,
+    name: &str,
+    norm_path: &str,
+    kind: WorkspaceKind,
+    color: Option<&str>,
+    remote_json: Option<&str>,
+) -> Result<WorkspaceMeta, StorageError> {
     if let Some(existing) = find_workspace_by_path(conn, norm_path)? {
         return Ok(existing);
     }
     let id = Uuid::new_v4().to_string();
     let now = now_ms()?;
     conn.execute(
-        "INSERT INTO workspaces (id, name, path, kind, color, is_active, created_at, last_opened_at)
-         VALUES (?1, ?2, ?3, ?4, ?5, 0, ?6, ?6)",
-        rusqlite::params![id, name, norm_path, kind.as_str(), color, now],
+        "INSERT INTO workspaces (id, name, path, kind, color, is_active, created_at, last_opened_at, remote_json)
+         VALUES (?1, ?2, ?3, ?4, ?5, 0, ?6, ?6, ?7)",
+        rusqlite::params![id, name, norm_path, kind.as_str(), color, now, remote_json],
     )?;
     Ok(WorkspaceMeta {
         id,
@@ -197,6 +216,7 @@ pub fn upsert_workspace_by_path(
         kind,
         color: color.map(|s| s.to_string()),
         is_active: false,
+        remote: remote_json.and_then(|s| serde_json::from_str(s).ok()),
         created_at: now,
         last_opened_at: now,
         available: true,
@@ -474,6 +494,23 @@ mod tests {
         remove_workspace(&conn, &a.id).unwrap();
         assert_eq!(count_workspaces(&conn).unwrap(), 1);
         assert!(get_workspace(&conn, &a.id).unwrap().is_none());
+    }
+
+    #[test]
+    fn workspace_remote_roundtrip() {
+        let conn = init_in_memory().unwrap();
+        let remote = r#"{"host":"10.0.0.5","port":3306,"username":"team","database":"apic_ws"}"#;
+        let w = upsert_workspace_full(&conn, "Team", "/ws/team", WorkspaceKind::Team, None, Some(remote))
+            .unwrap();
+        assert_eq!(w.kind, WorkspaceKind::Team);
+        let loaded = get_workspace(&conn, &w.id).unwrap().unwrap();
+        let r = loaded.remote.expect("phải parse được remote_json");
+        assert_eq!(r.host, "10.0.0.5");
+        assert_eq!(r.port, 3306);
+        assert_eq!(r.database, "apic_ws");
+        // Workspace thường không có remote.
+        let p = upsert_workspace_by_path(&conn, "P", "/ws/p", WorkspaceKind::Personal, None).unwrap();
+        assert!(get_workspace(&conn, &p.id).unwrap().unwrap().remote.is_none());
     }
 
     #[test]

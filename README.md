@@ -3,10 +3,10 @@
 > **"Everything about APIs"** — desktop app AI-first thay thế Postman.
 > Tauri v2 (Rust core + React) · Multi-provider AI (BYOK) · Ops Workspace · git-friendly.
 
-[![CI](https://github.com/OWNER/api-companion/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/api-companion/actions/workflows/ci.yml)
-[![Release](https://github.com/OWNER/api-companion/actions/workflows/release.yml/badge.svg)](https://github.com/OWNER/api-companion/actions/workflows/release.yml)
+[![CI](https://github.com/xShiroeNguyenx/api-companion/actions/workflows/ci.yml/badge.svg)](https://github.com/xShiroeNguyenx/api-companion/actions/workflows/ci.yml)
+[![Release](https://github.com/xShiroeNguyenx/api-companion/actions/workflows/release.yml/badge.svg)](https://github.com/xShiroeNguyenx/api-companion/actions/workflows/release.yml)
 
-**Phiên bản: `0.4.1` — Public Alpha** · Windows-first · MIT License · 81 test pass
+**Phiên bản: `0.4.2` — Public Alpha** · Windows-first · MIT License · 95 test pass
 
 Không chỉ "Send Request": API Companion xoay quanh **toàn bộ vòng đời làm việc với API** — hiểu API, sinh request bằng ngôn ngữ tự nhiên, chẩn đoán lỗi, kiểm chứng dữ liệu trong DB, đọc log qua SSH — trong **một** ứng dụng nhẹ (~10MB).
 
@@ -24,7 +24,7 @@ Không đấu ở "HTTP client tốt hơn" (Bruno/Hoppscotch/Insomnia đã miễ
 
 ---
 
-## Tính năng chính (v0.4.0)
+## Tính năng chính (v0.4.2)
 
 ### HTTP & giao thức
 - Engine **hyper** tự dựng: mọi method, body (raw/JSON/form/multipart/binary), timeout, redirect, cookie jar, **hủy request**.
@@ -55,21 +55,26 @@ Không đấu ở "HTTP client tốt hơn" (Bruno/Hoppscotch/Insomnia đã miễ
 - **DB query runner** read-only enforced (Postgres/MySQL/SQLite) — chặn DML/DDL ở tầng parse.
 - **SSH command runner** (tail/grep log).
 
+### Cập nhật & phân phối
+- **🚀 Auto-update**: app tự báo khi có version mới → một chạm "Cập nhật & khởi động lại" (artifact ký minisign, verify trong app; không gặp lại SmartScreen sau lần cài đầu). Có từ v0.4.2.
+
 ### Workspace đa vùng + tiện ích
-- **Multi-workspace registry**: nhiều workspace hạng nhất (personal/shared, màu nhãn), switcher + manager + command palette.
+- **Multi-workspace registry**: nhiều workspace hạng nhất (personal/shared/team, màu nhãn), switcher + manager + command palette.
+- **🗄 Team workspace (MySQL)**: team tự dựng MySQL server → mỗi thành viên chỉ nhập thông tin kết nối là dùng chung MỘT workspace. Đồng bộ 3 chiều theo từng file (tự động + nút Sync), conflict giữ cả hai bản, password trong OS keychain. Setup chỉ tạo database MỚI riêng — không đụng database khác trên server; chạy được cả MySQL cũ (MyISAM).
 - **Namespace secret theo workspace** (hết đụng độ env trùng tên; migrate an toàn không mất secret cũ).
 - **Persist & restore tabs** theo từng workspace.
 - **Code generation** đa ngôn ngữ: cURL, HTTP raw, JS fetch/axios, node-fetch, Python requests/httpx, Go, PHP, Rust reqwest.
-- **Chia sẻ team**: đặt thư mục TOML trên OneDrive/Dropbox/network drive → cả team cùng mở. Export native bundle (`.apic.json`) / Postman v2.1.
+- **Chia sẻ team**: Team workspace qua MySQL (ở trên), hoặc đặt thư mục TOML trên OneDrive/Google Drive/Dropbox/network drive → cả team cùng mở. Export native bundle (`.apic.json`) / Postman v2.1.
 
 ---
 
 ## Cài đặt
 
 ### Tải bản build sẵn (khuyến nghị)
-1. Tải installer Windows (`.msi` hoặc `.exe` NSIS) mới nhất từ **[GitHub Releases](https://github.com/OWNER/api-companion/releases)**.
+1. Tải installer Windows (`.msi` hoặc `.exe` NSIS) mới nhất từ **[GitHub Releases](https://github.com/xShiroeNguyenx/api-companion/releases)**.
 2. Chạy installer. Nếu SmartScreen cảnh báo (do chưa ký số): *More info → Run anyway*.
 3. Cần **WebView2 Runtime** (Windows 11 có sẵn; Windows 10 installer sẽ tự nhắc).
+4. Từ v0.4.2: các bản sau **tự update trong app** — không cần tải lại installer.
 
 ### Build từ source
 Xem [docs/RELEASE.md](./docs/RELEASE.md) cho hướng dẫn build & đóng gói đầy đủ. Tóm tắt:
@@ -114,15 +119,16 @@ macOS/Linux: build best-effort từ CI matrix, chưa test kỹ ở alpha.
 
 ## Kiến trúc & trạng thái crate
 
-Rust core module hoá triệt để (mỗi crate một contract trait-first, test độc lập). **81 test pass.**
+Rust core module hoá triệt để (mỗi crate một contract trait-first, test độc lập). **95 test pass.**
 
 | Crate / thành phần | Trạng thái |
 |---|---|
 | `crates/ipc-types` — hợp đồng dữ liệu trung tâm | ✅ 3 test |
 | `crates/http-engine` — engine hyper (timing/TLS/redirect/decompress/cancel) | ✅ 5 test + verify endpoint thật |
-| `crates/storage` — SQLite history + settings + registry workspace | ✅ 5 test |
+| `crates/storage` — SQLite history + settings + registry workspace (v5 remote) | ✅ 6 test |
 | `crates/curl-tools` — import/export cURL | ✅ 7 test |
 | `crates/workspace` — TOML collections/env + resolver + inherit + normalize_root | ✅ 14 test |
+| `crates/workspace-sync` — team workspace MySQL (mirror + 3-way sync) | ✅ 13 test |
 | `crates/postman-import` — Postman v2.1 collection + environment | ✅ 5 test |
 | `crates/secrets` — OS keychain (keyring) + scoped theo workspace | ✅ 1 test |
 | `crates/ai-core` — provider BYOK + scrubber + prompts | ✅ 7 test |
@@ -133,7 +139,7 @@ Rust core module hoá triệt để (mỗi crate một contract trait-first, tes
 | `crates/ops-ssh` — chạy lệnh qua ssh binary hệ thống | ✅ 1 test |
 | `crates/bundle` — format share native (export/import) | ✅ 2 test |
 | `crates/codegen` — sinh code request đa ngôn ngữ (fetch/python/go/php/rust…) | ✅ 6 test |
-| `apps/desktop/src-tauri` — Tauri shell + 54 commands | ✅ 3 test |
+| `apps/desktop/src-tauri` — Tauri shell + 57 commands | ✅ 3 test |
 | `apps/desktop` — React frontend | ✅ typecheck + bundle sạch |
 
 **Quy tắc vàng:** WebView không bao giờ tự gọi network — mọi request đi qua Rust core (tránh CORS, không lộ secret, metadata đầy đủ).

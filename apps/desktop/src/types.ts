@@ -182,7 +182,15 @@ export type WorkspaceInfo = {
 };
 
 // --- Registry đa-workspace (v4) ---
-export type WorkspaceKind = "personal" | "shared";
+export type WorkspaceKind = "personal" | "shared" | "team";
+
+/** Cấu hình MySQL của team workspace (không chứa password — password ở keychain). */
+export type RemoteDbConfig = {
+  host: string;
+  port: number;
+  username: string;
+  database: string;
+};
 
 export type WorkspaceMeta = {
   id: string;
@@ -191,9 +199,19 @@ export type WorkspaceMeta = {
   kind: WorkspaceKind;
   color: string | null;
   is_active: boolean;
+  remote: RemoteDbConfig | null;
   created_at: number;
   last_opened_at: number;
   available: boolean;
+};
+
+/** Báo cáo một lần đồng bộ team workspace. */
+export type WsSyncReport = {
+  pulled: number;
+  pushed: number;
+  deleted_local: number;
+  deleted_remote: number;
+  conflicts: string[];
 };
 
 /** Bảng màu preset cho nhãn workspace. */

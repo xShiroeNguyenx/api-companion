@@ -81,7 +81,9 @@ export function CommandPalette() {
         },
       },
       { id: "ws-manage", group: "command", label: "⚙ Manage Workspaces…", run: () => setWsManagerOpen(true) },
+      { id: "ws-team", group: "command", label: "🗄 Add Team Workspace (MySQL)…", run: () => useStore.getState().setTeamWsOpen(true) },
       { id: "codegen", group: "command", label: "</> Generate code…", run: () => useStore.getState().setCodegenOpen(true) },
+      { id: "check-update", group: "command", label: "🚀 Check for Updates…", run: () => void useStore.getState().checkUpdate(false) },
     ],
     [addTab, send, cancel, setCurlImport, setPostman, setSave, setGenerateOpen, setAiSettingsOpen, setGenerateTestsOpen, explain, diagnose, toggleTheme, clearHistory, addWorkspaceFolder, setWsManagerOpen, active],
   );
@@ -93,7 +95,7 @@ export function CommandPalette() {
         .map((w) => ({
           id: `ws:${w.id}`,
           group: "command" as const,
-          label: `${w.kind === "shared" ? "👥" : "📁"} Switch to workspace: ${w.name}`,
+          label: `${w.kind === "team" ? "🗄" : w.kind === "shared" ? "👥" : "📁"} Switch to workspace: ${w.name}`,
           run: () => activateWorkspace(w.id),
         })),
     [workspaces, activeWorkspaceId, activateWorkspace],

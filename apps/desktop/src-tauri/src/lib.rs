@@ -8,6 +8,7 @@ mod commands;
 mod ops;
 mod postman;
 mod share;
+mod teamws;
 
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
@@ -27,6 +28,8 @@ pub struct AppState {
     pub workspace_root: Mutex<PathBuf>,
     /// Id workspace đang active trong registry (dùng cho secret scope + FE match).
     pub active_workspace_id: Mutex<String>,
+    /// Khoá tuần tự hoá sync team workspace (tokio Mutex — giữ được qua await).
+    pub team_sync: tokio::sync::Mutex<()>,
 }
 
 /// Tên hiển thị từ đường dẫn (segment cuối), fallback khi không có tên khác.
@@ -97,7 +100,14 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_process::init())
         .setup(|app| {
+            // Auto-update (desktop-only): check/download qua GitHub Releases latest.json,
+            // artifact được ký minisign — xem docs/RELEASE.md §4.
+            #[cfg(desktop)]
+            app.handle()
+                .plugin(tauri_plugin_updater::Builder::new().build())?;
+
             let data = app.path().app_data_dir()?;
             std::fs::create_dir_all(&data)?;
 
@@ -115,6 +125,7 @@ pub fn run() {
                 inflight: Mutex::new(HashMap::new()),
                 workspace_root: Mutex::new(ws_root),
                 active_workspace_id: Mutex::new(active_id),
+                team_sync: tokio::sync::Mutex::new(()),
             });
             Ok(())
         })
@@ -173,6 +184,9 @@ pub fn run() {
             ops::ssh_exec,
             share::export_bundle,
             share::export_postman,
+            teamws::team_ws_test,
+            teamws::team_ws_add,
+            teamws::team_ws_sync,
         ])
         .run(tauri::generate_context!())
         .expect("lỗi khi chạy API Companion");

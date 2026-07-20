@@ -120,10 +120,14 @@ textarea:focus {
   font-family: "Cascadia Code", "Consolas", monospace;
 }
 .send {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: var(--accent);
   color: #fff;
   border: none;
   border-radius: 6px;
+  min-height: 32px;
   padding: 0 22px;
   font-weight: 600;
 }
@@ -290,10 +294,14 @@ textarea:focus {
   margin-bottom: 10px;
 }
 .chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: var(--bg-3);
   border: 1px solid var(--border);
   border-radius: 20px;
   color: var(--text-dim);
+  min-height: 28px;
   padding: 4px 14px;
 }
 .chip.active {
@@ -1357,6 +1365,110 @@ textarea:focus {
   line-height: 1.55;
   white-space: pre;
   color: var(--text);
+}
+
+/* ============ Team workspace (MySQL) ============ */
+.tw-grid {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 8px 10px;
+  align-items: center;
+  margin: 12px 0;
+}
+.tw-grid label {
+  color: var(--text-dim);
+  font-size: 12.5px;
+}
+.tw-msg {
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 12.5px;
+  margin-top: 8px;
+  word-break: break-word;
+}
+.tw-ok {
+  background: rgba(34, 197, 94, 0.12);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.35);
+}
+.tw-err {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+}
+.ws-syncing {
+  display: inline-block;
+  animation: tw-spin 1s linear infinite;
+  color: var(--accent-2);
+}
+.ws-sync-at {
+  color: var(--text-dim);
+  font-size: 11.5px;
+}
+.wm-kind-team {
+  white-space: nowrap;
+  font-size: 12.5px;
+  color: var(--text-dim);
+  padding: 6px 8px;
+}
+@keyframes tw-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============ Auto-update banner ============ */
+.update-banner,
+.update-toast {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1000;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 12px 40px var(--shadow);
+  padding: 12px 14px;
+  max-width: 360px;
+  font-size: 13px;
+}
+.update-toast {
+  color: var(--text-dim);
+}
+.update-text {
+  margin-bottom: 10px;
+}
+.update-notes {
+  color: var(--text-dim);
+  font-size: 12px;
+  margin-top: 4px;
+  max-height: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.update-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+.update-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.update-bar {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--bg-3);
+  overflow: hidden;
+}
+.update-fill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.2s ease;
 }
 
 /* Scrollbars */

@@ -23,6 +23,7 @@ import type {
   WorkspaceInfo,
   WorkspaceKind,
   WorkspaceMeta,
+  WsSyncReport,
 } from "../types";
 
 // --- Requests ---
@@ -113,6 +114,29 @@ export function updateWorkspace(
 export function removeWorkspace(id: string): Promise<WorkspaceMeta[]> {
   return invoke<WorkspaceMeta[]>("remove_workspace", { id });
 }
+// --- Team workspace (MySQL) ---
+export function teamWsTest(
+  host: string,
+  port: number,
+  username: string,
+  password: string,
+): Promise<string> {
+  return invoke<string>("team_ws_test", { host, port, username, password });
+}
+export function teamWsAdd(
+  name: string,
+  host: string,
+  port: number,
+  username: string,
+  password: string,
+  database: string,
+): Promise<WorkspaceMeta> {
+  return invoke<WorkspaceMeta>("team_ws_add", { name, host, port, username, password, database });
+}
+export function teamWsSync(): Promise<WsSyncReport> {
+  return invoke<WsSyncReport>("team_ws_sync");
+}
+
 export function saveTabSession(workspaceId: string, json: string): Promise<void> {
   return invoke<void>("save_tab_session", { workspaceId, json });
 }

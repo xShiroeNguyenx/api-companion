@@ -59,6 +59,17 @@ Không code những mục ở đây cho tới khi được kéo vào một miles
 - ✅ AI Generate Test Cases (nhóm categories, add assertions/run now, fallback tĩnh)
 - ✅ Run collection/folder (nút ▶) + báo cáo pass/fail
 
+## Đã hoàn thành (v0.4.2): Team workspace MySQL — cả team dùng chung MỘT workspace
+
+Con đường giữa "shared folder" và "sync server realtime kiểu Hoppscotch" (vẫn hoãn vì trái local-first): team tự dựng MySQL, app **mirror + 3-way sync** — không cần account/server app riêng.
+
+- ✅ Crate `workspace-sync`: nội dung workspace vẫn là TOML trong thư mục cache local (mọi tính năng file-based dùng nguyên vẹn); sync 3 chiều local/remote/base theo từng file, tombstone cho xoá, conflict → server thắng + bản local giữ thành `*-conflict-*.toml` và đẩy lên cho cả team; `workspace.toml.active_environment` là lựa chọn cá nhân (không sync).
+- ✅ An toàn DB hệ thống: chỉ `CREATE DATABASE/TABLE IF NOT EXISTS` với database MỚI (`apic_workspace` mặc định, validate tên chống injection), 2 bảng `apic_files`/`apic_meta`, mọi SQL qualified — idempotent khi người thứ 2+ join, không ghi đè.
+- ✅ Tương thích MySQL cũ: không ép ENGINE (MyISAM-only OK, hết lỗi 1286), PK `path_hash` CHAR(64) (né giới hạn key 767/1000 bytes). Password ở OS keychain (scope workspace id). Registry migration v5 (`remote_json`), kind `team`.
+- ✅ 3 command (`team_ws_test/add/sync`) + modal kết nối + auto-sync (mở app/switch/sau mutation debounce 1.5s/poll 30s) + nút Sync trong switcher.
+
+Hoãn: sync realtime (hiện poll 30s — đủ cho team nhỏ); chọn engine/charset tùy ý; nén content; xoá database khi gỡ workspace (hiện giữ nguyên — an toàn trước).
+
 ## Đã hoàn thành: Multi-workspace registry + 3 feature (lấy cảm hứng Hoppscotch)
 
 Nâng cấp workspace từ "một folder tại một thời điểm" lên **registry đa-workspace hạng nhất** (thích nghi local-first — bỏ team/GraphQL của Hoppscotch vì trái ADR 0001). Làm tuần tự 6 phase, mỗi phase build+test xanh.

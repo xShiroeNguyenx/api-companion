@@ -23,6 +23,7 @@ http-engine = { path = "../../../crates/http-engine" }
 storage = { path = "../../../crates/storage" }
 curl-tools = { path = "../../../crates/curl-tools" }
 workspace = { path = "../../../crates/workspace" }
+workspace-sync = { path = "../../../crates/workspace-sync" }
 postman-import = { path = "../../../crates/postman-import" }
 secrets = { path = "../../../crates/secrets" }
 ai-core = { path = "../../../crates/ai-core" }
@@ -36,6 +37,10 @@ codegen = { path = "../../../crates/codegen" }
 tauri = { version = "2", features = [] }
 tauri-plugin-opener = "2"
 tauri-plugin-dialog = "2"
+tauri-plugin-process = "2"
+
+[target."cfg(any(target_os = \"macos\", windows, target_os = \"linux\"))".dependencies]
+tauri-plugin-updater = "2"
 serde = { workspace = true }
 serde_json = { workspace = true }
 tokio = { workspace = true }

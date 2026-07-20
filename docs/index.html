@@ -295,8 +295,8 @@
       <a href="#features">Tính năng</a>
       <a href="#ai">AI</a>
       <a href="#roadmap">Roadmap</a>
-      <a href="https://github.com/OWNER/api-companion" target="_blank" rel="noopener">GitHub</a>
-      <a class="btn btn-primary btn-sm" href="https://github.com/OWNER/api-companion/releases" target="_blank" rel="noopener">Tải về</a>
+      <a href="https://github.com/xShiroeNguyenx/api-companion" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn btn-primary btn-sm" href="https://github.com/xShiroeNguyenx/api-companion/releases" target="_blank" rel="noopener">Tải về</a>
     </div>
   </div>
 </nav>
@@ -304,7 +304,7 @@
 <!-- ================= HERO ================= -->
 <header class="hero">
   <div class="container">
-    <span class="hero-badge"><span class="dot"></span>v0.4.0 — Public Alpha · Windows-first · MIT</span>
+    <span class="hero-badge"><span class="dot"></span>v0.4.2 — Public Alpha · Windows-first · MIT</span>
     <h1>Everything about APIs.<br><span class="grad">Trong một app duy nhất.</span></h1>
     <p class="sub">
       Desktop app <b>AI-first</b> thay thế Postman: sinh request bằng ngôn ngữ tự nhiên,
@@ -312,8 +312,8 @@
       tất cả trong một ứng dụng nhẹ <b>~10MB</b>, dữ liệu là file TOML nằm trên máy bạn.
     </p>
     <div class="hero-ctas">
-      <a class="btn btn-primary" href="https://github.com/OWNER/api-companion/releases" target="_blank" rel="noopener">⬇ Tải cho Windows</a>
-      <a class="btn btn-ghost" href="https://github.com/OWNER/api-companion" target="_blank" rel="noopener">★ Xem trên GitHub</a>
+      <a class="btn btn-primary" href="https://github.com/xShiroeNguyenx/api-companion/releases" target="_blank" rel="noopener">⬇ Tải cho Windows</a>
+      <a class="btn btn-ghost" href="https://github.com/xShiroeNguyenx/api-companion" target="_blank" rel="noopener">★ Xem trên GitHub</a>
     </div>
     <p class="hero-note">Miễn phí &amp; mã nguồn mở · AI theo mô hình BYOK — bạn tự nhập API key, secret không bao giờ rời máy</p>
 
@@ -396,7 +396,7 @@
       <div class="diff-card" style="--c1:#2dd4a7;--c2:#4f8cff">
         <div class="diff-icon">⎇</div>
         <h3>Local-first &amp; git-friendly</h3>
-        <p>Collections/environments là file <b>TOML</b> — một request một file, diff sạch. <code style="font-family:var(--mono);color:#7ee0c2">git init</code> là chia sẻ được cho cả team. Hoặc đặt thư mục lên OneDrive/Dropbox/network drive.</p>
+        <p>Collections/environments là file <b>TOML</b> — một request một file, diff sạch. <code style="font-family:var(--mono);color:#7ee0c2">git init</code> là chia sẻ được cho cả team. Hoặc đặt thư mục lên OneDrive/Google Drive/Dropbox/network drive — hoặc dùng <b>Team workspace (MySQL)</b>: cả team connect chung một MySQL server tự dựng.</p>
       </div>
     </div>
   </div>
@@ -406,7 +406,7 @@
 <section id="features" style="background:var(--bg-soft);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
   <div class="container">
     <div class="section-head">
-      <span class="kicker">Tính năng chính · v0.4.0</span>
+      <span class="kicker">Tính năng chính · v0.4.2</span>
       <h2>Daily driver thực thụ cho dev backend</h2>
       <p>Rust core module hoá triệt để — mọi request đi qua engine hyper tự dựng, WebView không bao giờ tự gọi network.</p>
     </div>
@@ -420,7 +420,7 @@
       <div class="feat"><div class="fi">✅</div><h4>Assertion runner</h4><p>Khai báo status / jsonpath / header / response-time / body — tự chạy sau Send. Run cả collection/folder → báo cáo pass/fail.</p></div>
       <div class="feat"><div class="fi">🧑‍💻</div><h4>Code generation</h4><p>cURL, HTTP raw, JS fetch/axios, node-fetch, Python requests/httpx, Go, PHP, Rust reqwest.</p></div>
       <div class="feat"><div class="fi">🗄</div><h4>History SQLite</h4><p>Restore cả response cũ. Import/export cURL một chạm.</p></div>
-      <div class="feat"><div class="fi">🖥</div><h4>Multi-workspace</h4><p>Nhiều workspace hạng nhất (personal/shared, màu nhãn), switcher + command palette <code>Ctrl+K</code>, persist &amp; restore tabs.</p></div>
+      <div class="feat"><div class="fi">🖥</div><h4>Multi-workspace</h4><p>Nhiều workspace hạng nhất (personal/shared/<b>team MySQL</b>, màu nhãn), switcher + command palette <code>Ctrl+K</code>, persist &amp; restore tabs.</p></div>
       <div class="feat"><div class="fi">📡</div><h4>SSH command runner</h4><p>tail/grep log server ngay cạnh request vừa gửi — connection manager TOML + secret keychain + test connection.</p></div>
       <div class="feat"><div class="fi">🛡</div><h4>DB query read-only</h4><p>Postgres / MySQL / SQLite. Chặn DML/DDL ở tầng sqlparser — muốn phá cũng không được.</p></div>
     </div>
@@ -499,8 +499,8 @@
       <h2>Tải API Companion <span class="grad">miễn phí</span></h2>
       <p>Installer Windows (<code style="font-family:var(--mono)">.msi</code> / <code style="font-family:var(--mono)">.exe</code>) chỉ ~10MB. Windows 11 chạy ngay; Windows 10 installer sẽ tự nhắc cài WebView2 Runtime.</p>
       <div class="hero-ctas">
-        <a class="btn btn-primary" href="https://github.com/OWNER/api-companion/releases" target="_blank" rel="noopener">⬇ Tải bản mới nhất</a>
-        <a class="btn btn-ghost" href="https://github.com/OWNER/api-companion" target="_blank" rel="noopener">Build từ source</a>
+        <a class="btn btn-primary" href="https://github.com/xShiroeNguyenx/api-companion/releases" target="_blank" rel="noopener">⬇ Tải bản mới nhất</a>
+        <a class="btn btn-ghost" href="https://github.com/xShiroeNguyenx/api-companion" target="_blank" rel="noopener">Build từ source</a>
       </div>
       <div class="alert">
         <span>⚠️</span>
@@ -523,10 +523,10 @@
   <div class="container foot">
     <span>⚡ <b style="color:var(--text)">API Companion</b> · MIT License © 2026</span>
     <span>
-      <a href="https://github.com/OWNER/api-companion" target="_blank" rel="noopener">GitHub</a>
-      <a href="https://github.com/OWNER/api-companion/releases" target="_blank" rel="noopener">Releases</a>
-      <a href="https://github.com/OWNER/api-companion/blob/main/CHANGELOG.md" target="_blank" rel="noopener">Changelog</a>
-      <a href="https://github.com/OWNER/api-companion/blob/main/PLAN.md" target="_blank" rel="noopener">Vision</a>
+      <a href="https://github.com/xShiroeNguyenx/api-companion" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/xShiroeNguyenx/api-companion/releases" target="_blank" rel="noopener">Releases</a>
+      <a href="https://github.com/xShiroeNguyenx/api-companion/blob/main/CHANGELOG.md" target="_blank" rel="noopener">Changelog</a>
+      <a href="https://github.com/xShiroeNguyenx/api-companion/blob/main/PLAN.md" target="_blank" rel="noopener">Vision</a>
     </span>
   </div>
 </footer>

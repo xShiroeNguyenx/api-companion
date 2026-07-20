@@ -433,13 +433,15 @@ pub struct WorkspaceInfo {
     pub tree: Vec<TreeNode>,
 }
 
-/// Loại workspace — chỉ là nhãn/icon phân biệt (local-first, KHÔNG có logic team).
+/// Loại workspace — nhãn/icon phân biệt. `Team` = nội dung đồng bộ qua MySQL server
+/// do team tự dựng (local mirror + sync); các loại khác thuần local-first.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[serde(rename_all = "snake_case")]
 pub enum WorkspaceKind {
     Personal,
     Shared,
+    Team,
 }
 
 impl Default for WorkspaceKind {
@@ -453,15 +455,44 @@ impl WorkspaceKind {
         match self {
             WorkspaceKind::Personal => "personal",
             WorkspaceKind::Shared => "shared",
+            WorkspaceKind::Team => "team",
         }
     }
 
     pub fn from_str_lossy(s: &str) -> Self {
         match s {
             "shared" => WorkspaceKind::Shared,
+            "team" => WorkspaceKind::Team,
             _ => WorkspaceKind::Personal,
         }
     }
+}
+
+/// Cấu hình kết nối MySQL của team workspace (KHÔNG chứa password — password ở keychain).
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
+pub struct RemoteDbConfig {
+    pub host: String,
+    pub port: u16,
+    pub username: String,
+    /// Database RIÊNG cho workspace (được tạo mới lúc setup, không đụng DB khác).
+    pub database: String,
+}
+
+/// Kết quả một lần đồng bộ team workspace (local ↔ MySQL).
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
+pub struct WsSyncReport {
+    /// Số file kéo về từ server.
+    pub pulled: u32,
+    /// Số file đẩy lên server.
+    pub pushed: u32,
+    /// Số file xoá local (vì server đã xoá).
+    pub deleted_local: u32,
+    /// Số file đánh dấu xoá trên server (vì local đã xoá).
+    pub deleted_remote: u32,
+    /// Đường dẫn các file bị conflict (server thắng; bản local giữ thành file "-conflict-").
+    pub conflicts: Vec<String>,
 }
 
 /// Một mục trong registry workspace (metadata, KHÔNG phải nội dung).
@@ -483,6 +514,9 @@ pub struct WorkspaceMeta {
     pub color: Option<String>,
     /// Workspace này có đang active không.
     pub is_active: bool,
+    /// Cấu hình MySQL nếu là team workspace (kind = Team); None với workspace thường.
+    #[serde(default)]
+    pub remote: Option<RemoteDbConfig>,
     /// Unix epoch milliseconds.
     pub created_at: i64,
     pub last_opened_at: i64,

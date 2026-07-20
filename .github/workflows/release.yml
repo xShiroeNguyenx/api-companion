@@ -58,11 +58,17 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       # tauri-action tự chạy beforeBuildCommand (pnpm build) → build FE + Rust + đóng gói installer,
-      # rồi tạo/ cập nhật GitHub Release theo tag và upload artifact.
+      # rồi tạo/ cập nhật GitHub Release theo tag và upload artifact (kèm .sig + latest.json cho updater).
+      #
+      # Auto-update: `--config src-tauri/tauri.release.conf.json` bật createUpdaterArtifacts CHỈ trong CI
+      # (build local không cần private key). TAURI_SIGNING_PRIVATE_KEY = secret chứa nội dung file key
+      # minisign (xem docs/RELEASE.md §4). Thiếu secret này → build release sẽ FAIL có chủ đích.
       - name: Build & release (tauri-action)
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
           projectPath: apps/desktop
           tagName: ${{ github.ref_name }}
@@ -70,7 +76,10 @@ jobs:
           releaseBody: |
             Xem [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) để biết chi tiết.
 
-            ⚠️ Bản alpha **chưa ký số** — Windows SmartScreen sẽ cảnh báo: bấm *More info → Run anyway*.
+            🚀 Từ v0.4.2 app có **auto-update**: bản sau chỉ cần bấm "Cập nhật & khởi động lại" trong app.
+
+            ⚠️ Bản alpha **chưa ký số** — Windows SmartScreen sẽ cảnh báo khi cài lần đầu: bấm *More info → Run anyway*.
           releaseDraft: true
           prerelease: true
-          args: ${{ matrix.args }}
+          includeUpdaterJson: true
+          args: ${{ matrix.args }} --config src-tauri/tauri.release.conf.json
