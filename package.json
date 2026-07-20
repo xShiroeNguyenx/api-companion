@@ -1,7 +1,7 @@
 {
   "name": "api-companion-monorepo",
   "private": true,
-  "version": "0.4.2",
+  "version": "0.4.3",
   "scripts": {
     "dev": "pnpm --filter api-companion-desktop tauri dev",
     "build:app": "pnpm --filter api-companion-desktop tauri build",

@@ -83,6 +83,8 @@ App dùng `tauri-plugin-updater`: check `latest.json` trên GitHub Releases (end
 - Updater artifacts (`.sig`, `latest.json`) chỉ bật trong CI qua `--config src-tauri/tauri.release.conf.json` → **build local không cần key**. Muốn test updater cục bộ: set env `TAURI_SIGNING_PRIVATE_KEY_PATH` rồi build với config đó.
 - Lưu ý: chỉ bản cài **từ v0.4.2 trở đi** có updater; user bản cũ hơn vẫn tải installer thủ công một lần.
 
+> ⚠️ **Gotcha khi test updater**: endpoint dùng `releases/latest/download/latest.json`. GitHub coi `/latest/` là release **không phải draft và không phải pre-release**. Workflow tạo draft + prerelease, nên khi publish để updater thấy được, phải **bỏ tick "Set as a pre-release"** và **tick "Set as the latest release"**. Nếu để nguyên pre-release, app sẽ báo "đã mới nhất" dù đã có bản cao hơn. (Muốn giữ nhãn pre-release mà vẫn update được thì đổi endpoint sang URL tag cụ thể — nhưng phải sửa mỗi lần release, không nên.)
+
 ## 4b. Code signing Windows (hoãn tới beta)
 
 Bản alpha **chưa ký số** → Windows SmartScreen sẽ cảnh báo "Windows protected your PC" khi cài **lần đầu** (update qua updater không gặp lại cảnh báo). Hướng dẫn người dùng: **More info → Run anyway**.

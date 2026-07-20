@@ -8,6 +8,16 @@ project tuân [Semantic Versioning](https://semver.org/lang/vi/) với quy ướ
 
 _(chưa có)_
 
+## [0.4.3] — 2026-07-20
+
+Bản đầu tiên **kiểm chứng luồng auto-update** end-to-end (cài v0.4.2 → app tự nhận v0.4.3).
+
+### Added
+- **Badge version** cạnh tên app trên thanh trên cùng (lấy từ `getVersion()` — phản ánh đúng binary đang chạy). Bấm vào = *Kiểm tra cập nhật*. Sau khi auto-update xong và app khởi động lại, badge đổi `v0.4.2 → v0.4.3` là xác nhận trực quan update đã áp dụng.
+
+### Changed
+- _(không có thay đổi tính năng khác — release này chủ yếu để nâng version cho việc test updater.)_
+
 ## [0.4.2] — 2026-07-20
 
 ### Added
@@ -112,7 +122,8 @@ Bản phát hành công khai đầu tiên: HTTP client AI-first (M0–M3) + Ops 
 - macOS/Linux: build best-effort, chưa test kỹ.
 - Chưa có: GraphQL/WebSocket/gRPC (M4/M6), diff engine (M5), git panel, drag-drop node, rename giữ tên folder gốc. Xem [ICEBOX.md](./ICEBOX.md).
 
-[Unreleased]: https://github.com/xShiroeNguyenx/api-companion/compare/v0.4.2...HEAD
+[Unreleased]: https://github.com/xShiroeNguyenx/api-companion/compare/v0.4.3...HEAD
+[0.4.3]: https://github.com/xShiroeNguyenx/api-companion/compare/v0.4.2...v0.4.3
 [0.4.2]: https://github.com/xShiroeNguyenx/api-companion/compare/v0.4.1...v0.4.2
 [0.4.1]: https://github.com/xShiroeNguyenx/api-companion/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/xShiroeNguyenx/api-companion/releases/tag/v0.4.0

@@ -9,7 +9,7 @@
 | **AI** | Multi-provider BYOK — Claude (mặc định) + OpenAI + Gemini + Ollama |
 | **Quy mô** | Solo dev + AI-assisted coding (Claude Code) |
 | **Ngày lập plan** | 2026-07-13 |
-| **Phiên bản hiện tại** | **`0.4.2` — Public Alpha** (cập nhật 2026-07-20) |
+| **Phiên bản hiện tại** | **`0.4.3` — Public Alpha** (cập nhật 2026-07-20) |
 
 ---
 

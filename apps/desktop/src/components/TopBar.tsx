@@ -1,10 +1,13 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { getVersion } from "@tauri-apps/api/app";
 import { useStore, useActiveTab } from "../state/store";
 import { HTTP_METHODS } from "../types";
 import { EnvSwitcher } from "./EnvSwitcher";
 
 export function TopBar() {
   const tab = useActiveTab();
+  const [version, setVersion] = useState("");
+  const checkUpdate = useStore((s) => s.checkUpdate);
   const patchDraft = useStore((s) => s.patchDraft);
   const send = useStore((s) => s.send);
   const cancel = useStore((s) => s.cancel);
@@ -28,6 +31,11 @@ export function TopBar() {
     return () => clearTimeout(h);
   }, [draft.url, activeEnv, tab.id, refreshResolve]);
 
+  // Version thật của binary đang chạy (xác nhận auto-update đã áp dụng).
+  useEffect(() => {
+    getVersion().then(setVersion).catch(() => {});
+  }, []);
+
   function onSave() {
     if (tab.savedId) saveActive(tab.savedId, tab.name);
     else setSave(true);
@@ -37,6 +45,15 @@ export function TopBar() {
     <header className="topbar">
       <div className="brand">
         <span className="logo">◆</span> API Companion
+        {version && (
+          <button
+            className="version-badge"
+            title="Kiểm tra cập nhật"
+            onClick={() => void checkUpdate(false)}
+          >
+            v{version}
+          </button>
+        )}
       </div>
 
       <div className="urlbar">

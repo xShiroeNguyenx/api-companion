@@ -101,6 +101,19 @@ textarea:focus {
 .logo {
   color: var(--accent-2);
 }
+.version-badge {
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--text-dim);
+  font-size: 11px;
+  padding: 2px 8px;
+  margin-left: 2px;
+}
+.version-badge:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
 .urlbar {
   flex: 1;
   display: flex;

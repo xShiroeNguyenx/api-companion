@@ -6,7 +6,7 @@
 [![CI](https://github.com/xShiroeNguyenx/api-companion/actions/workflows/ci.yml/badge.svg)](https://github.com/xShiroeNguyenx/api-companion/actions/workflows/ci.yml)
 [![Release](https://github.com/xShiroeNguyenx/api-companion/actions/workflows/release.yml/badge.svg)](https://github.com/xShiroeNguyenx/api-companion/actions/workflows/release.yml)
 
-**Phiên bản: `0.4.2` — Public Alpha** · Windows-first · MIT License · 95 test pass
+**Phiên bản: `0.4.3` — Public Alpha** · Windows-first · MIT License · 95 test pass
 
 Không chỉ "Send Request": API Companion xoay quanh **toàn bộ vòng đời làm việc với API** — hiểu API, sinh request bằng ngôn ngữ tự nhiên, chẩn đoán lỗi, kiểm chứng dữ liệu trong DB, đọc log qua SSH — trong **một** ứng dụng nhẹ (~10MB).
 
@@ -24,7 +24,7 @@ Không đấu ở "HTTP client tốt hơn" (Bruno/Hoppscotch/Insomnia đã miễ
 
 ---
 
-## Tính năng chính (v0.4.2)
+## Tính năng chính (v0.4.3)
 
 ### HTTP & giao thức
 - Engine **hyper** tự dựng: mọi method, body (raw/JSON/form/multipart/binary), timeout, redirect, cookie jar, **hủy request**.
