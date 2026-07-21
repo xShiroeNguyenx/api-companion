@@ -405,7 +405,7 @@ fn build_body(body: &RequestBody) -> Result<BuiltBody, AppError> {
         }),
         RequestBody::Form { fields } => {
             let mut ser = form_urlencoded::Serializer::new(String::new());
-            for f in fields.iter().filter(|f| f.enabled) {
+            for f in fields.iter().filter(|f| f.enabled && !f.key.trim().is_empty()) {
                 ser.append_pair(&f.key, &f.value);
             }
             Ok(BuiltBody {
@@ -540,8 +540,9 @@ fn build_http_request(
         _ => {}
     }
 
-    // User headers (ghi đè/bổ sung).
-    for h in user_headers.iter().filter(|h| h.enabled) {
+    // User headers (ghi đè/bổ sung). Bỏ qua dòng key rỗng (vd. dòng trống cuối bảng)
+    // để không sinh header "" -> reqwest báo "invalid HTTP header name".
+    for h in user_headers.iter().filter(|h| h.enabled && !h.key.trim().is_empty()) {
         builder = builder.header(h.key.as_str(), h.value.as_str());
     }
 
@@ -557,7 +558,7 @@ fn build_http_request(
 fn build_url_with_query(base: &str, query: &[KeyValue]) -> Result<String, AppError> {
     let mut url = url::Url::parse(base)
         .map_err(|e| AppError::new(ErrorCode::InvalidUrl, format!("URL không hợp lệ: {e}")))?;
-    let enabled: Vec<&KeyValue> = query.iter().filter(|q| q.enabled).collect();
+    let enabled: Vec<&KeyValue> = query.iter().filter(|q| q.enabled && !q.key.trim().is_empty()).collect();
     if !enabled.is_empty() {
         for q in enabled {
             url.query_pairs_mut().append_pair(&q.key, &q.value);
@@ -669,6 +670,32 @@ mod tests {
         let out = build_url_with_query("https://x.com/p", &q).unwrap();
         assert!(out.contains("a=1"));
         assert!(!out.contains("b=2"));
+    }
+
+    #[test]
+    fn skips_empty_key_headers() {
+        // Dòng trống cuối bảng (key="") không được sinh thành header rỗng -> tránh "invalid HTTP header name".
+        let url = url::Url::parse("http://g-api.test/x").unwrap();
+        let headers = vec![
+            KeyValue { key: "Content-Type".into(), value: "application/json".into(), enabled: true },
+            KeyValue { key: "".into(), value: "".into(), enabled: true },
+            KeyValue { key: "  ".into(), value: "bỏ".into(), enabled: true },
+        ];
+        let req = build_http_request(
+            &url,
+            "POST",
+            "g-api.test",
+            80,
+            false,
+            &headers,
+            &ipc_types::Auth::None,
+            &Bytes::new(),
+            None,
+        )
+        .expect("build không được lỗi vì header rỗng");
+        assert_eq!(req.headers().get("content-type").unwrap(), "application/json");
+        // Không có header nào có tên rỗng/whitespace.
+        assert!(req.headers().keys().all(|k| !k.as_str().trim().is_empty()));
     }
 
     #[test]

@@ -8,7 +8,7 @@
 [![CI](https://github.com/xShiroeNguyenx/api-companion/actions/workflows/ci.yml/badge.svg)](https://github.com/xShiroeNguyenx/api-companion/actions/workflows/ci.yml)
 [![Release](https://github.com/xShiroeNguyenx/api-companion/actions/workflows/release.yml/badge.svg)](https://github.com/xShiroeNguyenx/api-companion/actions/workflows/release.yml)
 
-**バージョン: `0.4.3` — Public Alpha** · Windows 優先 · MIT ライセンス · テスト 95 件パス
+**バージョン: `0.4.4` — Public Alpha** · Windows 優先 · MIT ライセンス · テスト 96 件パス
 
 🌐 **[紹介ページ](https://xShiroeNguyenx.github.io/api-companion/)** · ⬇ **[最新版をダウンロード](https://github.com/xShiroeNguyenx/api-companion/releases/latest)** · 🗺 **[ロードマップ](./ROADMAP.md)** · 📋 **[変更履歴](./CHANGELOG.md)**
 
@@ -28,7 +28,7 @@
 
 ---
 
-## 主な機能（v0.4.3）
+## 主な機能（v0.4.4）
 
 ### HTTP & プロトコル
 - 自作の **hyper** エンジン: あらゆるメソッド、ボディ（raw/JSON/form/multipart/binary）、タイムアウト、リダイレクト、cookie jar、**リクエストのキャンセル**。

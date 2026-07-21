@@ -1,8 +1,60 @@
 import { useMemo, useState } from "react";
+import type { ReactNode } from "react";
+import { openUrl } from "@tauri-apps/plugin-opener";
 import { useActiveTab, useStore } from "../state/store";
 import type { ExchangeRecord, Timings } from "../types";
 
 type Tab = "body" | "headers" | "tls" | "timeline" | "tests";
+
+// Bắt URL http/https; dừng trước dấu nháy/space/ngoặc nhọn để không nuốt ký tự bao quanh trong JSON.
+const URL_RE = /https?:\/\/[^\s"'<>`\\]+/g;
+
+function openExternal(url: string) {
+  openUrl(url).catch(() => {
+    /* opener bị chặn — bỏ qua */
+  });
+}
+
+/** Render text, biến URL http(s) thành link click mở ra trình duyệt ngoài (giống Postman). */
+function Linkify({ text }: { text: string }): ReactNode {
+  // Body quá lớn thì bỏ linkify để khỏi tạo hàng nghìn node.
+  if (text.length > 200_000 || !text.includes("http")) return text;
+
+  const parts: ReactNode[] = [];
+  let last = 0;
+  let key = 0;
+  URL_RE.lastIndex = 0;
+  let m: RegExpExecArray | null;
+  while ((m = URL_RE.exec(text)) !== null) {
+    let url = m[0];
+    // Tách dấu câu bám đuôi (vd. "…png)," ) ra khỏi URL.
+    const trail = url.match(/[.,;:!?)\]}]+$/);
+    const tail = trail ? trail[0] : "";
+    if (tail) url = url.slice(0, url.length - tail.length);
+
+    if (m.index > last) parts.push(text.slice(last, m.index));
+    parts.push(
+      <a
+        key={key++}
+        className="resp-link"
+        href={url}
+        title={`Mở: ${url}`}
+        onClick={(e) => {
+          e.preventDefault();
+          // Đang bôi đen chọn text thì đừng mở link.
+          if (window.getSelection()?.toString()) return;
+          openExternal(url);
+        }}
+      >
+        {url}
+      </a>,
+    );
+    if (tail) parts.push(tail);
+    last = m.index + m[0].length;
+  }
+  if (last < text.length) parts.push(text.slice(last));
+  return parts;
+}
 
 export function ResponseView() {
   const [tab, setTab] = useState<Tab>("body");
@@ -208,7 +260,7 @@ function BodyView({ rec }: { rec: ExchangeRecord }) {
         />
         {search && <span className="match-count">{matchCount} khớp</span>}
       </div>
-      <pre className="code-view">{filtered}</pre>
+      <pre className="code-view">{Linkify({ text: filtered })}</pre>
     </div>
   );
 }

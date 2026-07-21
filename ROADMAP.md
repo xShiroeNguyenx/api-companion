@@ -2,7 +2,7 @@
 
 > Tổng quan lộ trình. Chi tiết kỹ thuật từng milestone: xem [PLAN.md](./PLAN.md). Lịch sử thay đổi: [CHANGELOG.md](./CHANGELOG.md).
 
-**Hiện tại: `v0.4.3` — Public Alpha** · Windows-first · 95 test Rust pass.
+**Hiện tại: `v0.4.4` — Public Alpha** · Windows-first · 96 test Rust pass.
 
 Quy ước version: `0.<milestone>.<patch>` trong Phase 1; **`1.0.0` = hết Phase 1 (M7)**; Phase 2 = `1.x`, Phase 3 = `2.x`.
 

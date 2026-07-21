@@ -8,6 +8,23 @@ project tuân [Semantic Versioning](https://semver.org/lang/vi/) với quy ướ
 
 _(chưa có)_
 
+## [0.4.4] — 2026-07-21
+
+Bản vá trải nghiệm dùng thực tế: sửa lỗi gửi request khi bảng còn dòng trống, thêm dán/copy header hàng loạt, và link trong response bấm mở được.
+
+### Added
+- **Bulk edit + Copy cho bảng key/value** (áp cho **Params / Headers / Form body** vì dùng chung `KeyValueEditor`): nút `≡ Bulk edit` chuyển sang ô text để **dán / sửa cả cụm** cùng lúc, mỗi dòng một cặp dạng `key: value` (tách ở dấu `:` đầu tiên nên value chứa `:` vẫn đúng; dòng mở đầu bằng `#` = tắt) — hết cảnh gõ từng dòng khi paste nhiều header. Nút `⧉ Copy` xuất toàn bộ cặp ra clipboard đúng định dạng đó (báo *✓ Đã copy*). Đồng bộ hai chiều với bảng.
+- **Link bấm được trong response body**: URL `http(s)://…` trong body được tô thành link, bấm là **mở bằng trình duyệt mặc định** của máy qua `tauri-plugin-opener` (giống Postman). Tách đúng dấu câu/nháy bao quanh trong JSON (vd. `"image_url": "https://…png"`), **không mở nhầm khi đang bôi đen** chọn text, và tự tắt linkify với body > 200k ký tự để khỏi phình DOM.
+
+### Fixed
+- **`invalid HTTP header name` khi Send** dù người dùng không nhập gì sai: bảng Headers luôn có một **dòng trống cuối với checkbox tích sẵn** (`key=""`), engine đẩy thành header rỗng → tầng `http` từ chối. `http-engine` giờ **bỏ qua mọi dòng key rỗng/toàn khoảng trắng** khi build request — áp cho cả **Headers, query Params và Form fields** (trước đó dòng trống còn sinh `?=` / `&=` thừa) → khớp hành vi vốn đã đúng của codegen & export cURL.
+
+### Docs
+- **README 3 ngôn ngữ** (VI/EN/JA) + **[ROADMAP.md](./ROADMAP.md)**; **landing page GitHub Pages** ([docs/index.html](./docs/index.html)); `release.yml` publish thẳng release (không draft). _(Gộp các commit sau khi cắt tag `v0.4.3`.)_
+
+### Kiểm định
+- **96 test Rust pass** (95 + 1 test mới `skips_empty_key_headers` chốt regression fix header rỗng), 0 fail; frontend `tsc --noEmit` sạch.
+
 ## [0.4.3] — 2026-07-20
 
 Bản đầu tiên **kiểm chứng luồng auto-update** end-to-end (cài v0.4.2 → app tự nhận v0.4.3).
@@ -122,7 +139,8 @@ Bản phát hành công khai đầu tiên: HTTP client AI-first (M0–M3) + Ops 
 - macOS/Linux: build best-effort, chưa test kỹ.
 - Chưa có: GraphQL/WebSocket/gRPC (M4/M6), diff engine (M5), git panel, drag-drop node, rename giữ tên folder gốc. Xem [ICEBOX.md](./ICEBOX.md).
 
-[Unreleased]: https://github.com/xShiroeNguyenx/api-companion/compare/v0.4.3...HEAD
+[Unreleased]: https://github.com/xShiroeNguyenx/api-companion/compare/v0.4.4...HEAD
+[0.4.4]: https://github.com/xShiroeNguyenx/api-companion/compare/v0.4.3...v0.4.4
 [0.4.3]: https://github.com/xShiroeNguyenx/api-companion/compare/v0.4.2...v0.4.3
 [0.4.2]: https://github.com/xShiroeNguyenx/api-companion/compare/v0.4.1...v0.4.2
 [0.4.1]: https://github.com/xShiroeNguyenx/api-companion/compare/v0.4.0...v0.4.1

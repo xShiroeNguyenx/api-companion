@@ -8,7 +8,7 @@
 [![CI](https://github.com/xShiroeNguyenx/api-companion/actions/workflows/ci.yml/badge.svg)](https://github.com/xShiroeNguyenx/api-companion/actions/workflows/ci.yml)
 [![Release](https://github.com/xShiroeNguyenx/api-companion/actions/workflows/release.yml/badge.svg)](https://github.com/xShiroeNguyenx/api-companion/actions/workflows/release.yml)
 
-**Version: `0.4.3` — Public Alpha** · Windows-first · MIT License · 95 tests passing
+**Version: `0.4.4` — Public Alpha** · Windows-first · MIT License · 96 tests passing
 
 🌐 **[Landing page](https://xShiroeNguyenx.github.io/api-companion/)** · ⬇ **[Download latest](https://github.com/xShiroeNguyenx/api-companion/releases/latest)** · 🗺 **[Roadmap](./ROADMAP.md)** · 📋 **[Changelog](./CHANGELOG.md)**
 
@@ -28,7 +28,7 @@ It doesn't compete on being "a better HTTP client" (Bruno/Hoppscotch/Insomnia ar
 
 ---
 
-## Key features (v0.4.3)
+## Key features (v0.4.4)
 
 ### HTTP & protocols
 - Custom **hyper** engine: any method, body (raw/JSON/form/multipart/binary), timeout, redirects, cookie jar, **request cancellation**.

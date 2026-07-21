@@ -8,7 +8,7 @@
 [![CI](https://github.com/xShiroeNguyenx/api-companion/actions/workflows/ci.yml/badge.svg)](https://github.com/xShiroeNguyenx/api-companion/actions/workflows/ci.yml)
 [![Release](https://github.com/xShiroeNguyenx/api-companion/actions/workflows/release.yml/badge.svg)](https://github.com/xShiroeNguyenx/api-companion/actions/workflows/release.yml)
 
-**Phiên bản: `0.4.3` — Public Alpha** · Windows-first · MIT License · 95 test pass
+**Phiên bản: `0.4.4` — Public Alpha** · Windows-first · MIT License · 96 test pass
 
 🌐 **[Trang giới thiệu](https://xShiroeNguyenx.github.io/api-companion/)** · ⬇ **[Tải bản mới nhất](https://github.com/xShiroeNguyenx/api-companion/releases/latest)** · 🗺 **[Roadmap](./ROADMAP.md)** · 📋 **[Changelog](./CHANGELOG.md)**
 
@@ -28,7 +28,7 @@ Không đấu ở "HTTP client tốt hơn" (Bruno/Hoppscotch/Insomnia đã miễ
 
 ---
 
-## Tính năng chính (v0.4.3)
+## Tính năng chính (v0.4.4)
 
 ### HTTP & giao thức
 - Engine **hyper** tự dựng: mọi method, body (raw/JSON/form/multipart/binary), timeout, redirect, cookie jar, **hủy request**.

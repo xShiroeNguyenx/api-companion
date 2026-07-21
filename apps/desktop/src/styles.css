@@ -338,6 +338,32 @@ textarea:focus {
 }
 
 /* Key/value tables */
+.kv-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.kv-mode {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-dim);
+  font-size: 12px;
+  padding: 3px 10px;
+  cursor: pointer;
+}
+.kv-mode:hover:not(:disabled) {
+  color: var(--text);
+  border-color: var(--accent);
+}
+.kv-mode:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.kv-bulk {
+  min-height: 140px;
+}
 .kv {
   width: 100%;
   border-collapse: collapse;
@@ -425,6 +451,15 @@ textarea:focus {
   line-height: 1.55;
   white-space: pre;
   color: var(--text);
+}
+.resp-link {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+.resp-link:hover {
+  text-decoration-thickness: 2px;
 }
 
 /* Headers table */
